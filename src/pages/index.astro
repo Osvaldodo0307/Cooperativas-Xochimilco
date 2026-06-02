@@ -25,7 +25,7 @@ const canonical = pageCanonical('/', Astro.site);
 <BaseLayout title={title} description={description} canonical={canonical}>
   <Hero
     titulo="Cooperativas de Xochimilco"
-    subtitulo="Portal colectivo de cooperativas: aliado tecnológico, registro de eventos y convocatorias de apoyo en la demarcación."
+    subtitulo="Portal informativo de cooperativas: directorio, eventos, agenda, memoria documental y apoyos en la demarcación."
     mostrarCta={true}
   />
 
@@ -134,14 +134,15 @@ const canonical = pageCanonical('/', Astro.site);
     </div>
   </section>
 
-  <section class="section-cta" aria-labelledby="titulo-cta-registro">
+  <section class="section-cta" aria-labelledby="titulo-cta-portal">
     <div class="container-main text-center">
-      <h2 id="titulo-cta-registro" class="section-title">¿Tu cooperativa quiere participar?</h2>
+      <h2 id="titulo-cta-portal" class="section-title">Contenido del portal</h2>
       <p class="section-lead mx-auto">
-        Completa el formulario de registro. Cuando envíes logotipo, fotografías y descripción, tu
-        ficha podrá publicarse en el directorio.
+        Las nuevas cooperativas y eventos se publicarán conforme se valide la información
+        correspondiente. La información será integrada por el equipo responsable del portal conforme
+        se cuente con datos validados.
       </p>
-      <a href="/registro" class="btn-primary mt-8">Ir al formulario de registro</a>
+      <a href="/cooperativas" class="btn-primary mt-8">Ver directorio de cooperativas</a>
     </div>
   </section>
 </BaseLayout>

@@ -1,3 +1,4 @@
+/** Cooperativas, eventos, apoyos y memoria: publicación solo por equipo administrador. */
 import { cooperativas } from '@/data/cooperativas';
 import eventosAgendaData from '@/data/eventos.json';
 import memoriaEventosData from '@/data/memoria-eventos.json';
