@@ -1,29 +1,57 @@
 ---
 const year = new Date().getFullYear();
+const contactEmail = 'contacto@spacesig.com';
 ---
 
 <footer class="mt-auto border-t border-slate-200 bg-alcaldia-900 text-slate-300">
   <div class="container-main py-12 sm:py-14">
     <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
-      <div class="sm:col-span-2 lg:col-span-1">
-        <p class="text-lg font-semibold text-white">Alcaldía Xochimilco</p>
-        <p class="text-sm text-alcaldia-200">Cooperativas</p>
+      <div class="sm:col-span-2">
+        <p class="text-lg font-semibold text-white">Cooperativas Xochimilco</p>
+        <p class="text-sm text-alcaldia-200">Portal informativo y de difusión</p>
         <p class="mt-3 text-sm leading-relaxed text-slate-400">
-          Portal de referencia para cooperativas participantes en programas de apoyo en la
-          demarcación. La información publicada es responsabilidad de cada organización.
+          Portal informativo y de difusión creado para promover la visibilidad de cooperativas,
+          productores locales, artesanos y proyectos de economía social en Xochimilco.
+        </p>
+        <p class="mt-3 text-sm leading-relaxed text-slate-400">
+          Este sitio no constituye un canal oficial de gobierno ni sustituye la información publicada
+          por las instituciones competentes. La información deberá verificarse siempre en fuentes
+          oficiales.
         </p>
       </div>
 
       <nav aria-label="Enlaces del sitio">
         <p class="text-sm font-semibold uppercase tracking-wide text-slate-400">Enlaces</p>
         <ul class="mt-4 list-none space-y-2.5 p-0 text-sm" role="list">
-          <li><a href="/cooperativas/destacada" class="text-slate-300 no-underline hover:text-white">Cooperativa destacada</a></li>
-          <li><a href="/cooperativas" class="text-slate-300 no-underline hover:text-white">Directorio</a></li>
-          <li><a href="/eventos" class="text-slate-300 no-underline hover:text-white">Eventos con galería</a></li>
-          <li><a href="/agenda" class="text-slate-300 no-underline hover:text-white">Agenda</a></li>
-          <li><a href="/memoria" class="text-slate-300 no-underline hover:text-white">Memoria documental</a></li>
-          <li><a href="/apoyos" class="text-slate-300 no-underline hover:text-white">Apoyos y convocatorias</a></li>
-          <li><a href="/registro" class="text-slate-300 no-underline hover:text-white">Registro y publicaciones</a></li>
+          <li>
+            <a href="/cooperativas/destacada" class="text-slate-300 no-underline hover:text-white">
+              Cooperativa destacada
+            </a>
+          </li>
+          <li>
+            <a href="/cooperativas" class="text-slate-300 no-underline hover:text-white">Directorio</a>
+          </li>
+          <li>
+            <a href="/eventos" class="text-slate-300 no-underline hover:text-white">Eventos</a>
+          </li>
+          <li>
+            <a href="/agenda" class="text-slate-300 no-underline hover:text-white">Agenda</a>
+          </li>
+          <li>
+            <a href="/memoria" class="text-slate-300 no-underline hover:text-white">
+              Memoria documental
+            </a>
+          </li>
+          <li>
+            <a href="/apoyos" class="text-slate-300 no-underline hover:text-white">
+              Apoyos y convocatorias
+            </a>
+          </li>
+          <li>
+            <a href="/registro" class="text-slate-300 no-underline hover:text-white">
+              Registro y publicaciones
+            </a>
+          </li>
         </ul>
       </nav>
 
@@ -31,17 +59,10 @@ const year = new Date().getFullYear();
         <p class="text-sm font-semibold uppercase tracking-wide text-slate-400">Contacto</p>
         <ul class="mt-4 list-none space-y-2.5 p-0 text-sm" role="list">
           <li>
-            <span class="text-slate-500">Correo de enlace</span><br />
-            <a
-              href="mailto:enlace.cooperativas@ejemplo-gob.mx"
-              class="text-slate-300 no-underline hover:text-white"
-            >
-              enlace.cooperativas@ejemplo-gob.mx
+            <span class="text-slate-500">Correo de contacto</span><br />
+            <a href={`mailto:${contactEmail}`} class="text-slate-300 no-underline hover:text-white">
+              {contactEmail}
             </a>
-          </li>
-          <li>
-            <span class="text-slate-500">Horario referencial</span><br />
-            <span class="text-slate-300">Lunes a viernes, 9:00 – 17:00 h</span>
           </li>
         </ul>
       </div>
@@ -60,8 +81,9 @@ const year = new Date().getFullYear();
 
     <div class="mt-10 border-t border-alcaldia-800 pt-8">
       <p class="text-center text-xs leading-relaxed text-slate-500">
-        © {year} Cooperativas Xochimilco — Ciudad de México. Sitio informativo sin fines comerciales.
-        Verifica siempre la información en las fuentes oficiales de cada programa o convocatoria.
+        © {year} Cooperativas Xochimilco. Sitio informativo desarrollado con fines de difusión y
+        promoción de iniciativas cooperativas y de economía social. No representa un canal oficial de
+        gobierno.
       </p>
     </div>
   </div>
