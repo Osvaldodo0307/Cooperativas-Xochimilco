@@ -5,19 +5,16 @@ import CooperativaDestacada from '@/components/CooperativaDestacada.astro';
 import EventoGaleriaCard from '@/components/EventoGaleriaCard.astro';
 import BloqueProximamente from '@/components/BloqueProximamente.astro';
 import AgendaCard from '@/components/AgendaCard.astro';
-import ApoyoCard from '@/components/ApoyoCard.astro';
 import {
   getCooperativaDestacadaPrincipal,
   getEventosAgenda,
   getEventosGaleria,
-  getApoyosAbiertos,
 } from '@/lib/data';
 import { pageCanonical } from '@/lib/seo';
 
 const cooperativaDestacada = getCooperativaDestacadaPrincipal();
 const eventosGaleria = getEventosGaleria();
 const { proximos, pasados } = getEventosAgenda();
-const apoyosAbiertos = getApoyosAbiertos().slice(0, 2);
 
 const title = 'Inicio';
 const description =
@@ -125,27 +122,16 @@ const canonical = pageCanonical('/', Astro.site);
   </section>
 
   <section class="container-main py-12 sm:py-14" aria-labelledby="titulo-apoyos-inicio">
-    <div class="flex flex-wrap items-end justify-between gap-4">
-      <h2 id="titulo-apoyos-inicio" class="section-title">Apoyos abiertos</h2>
-      <a href="/apoyos" class="link-arrow">Ver todos los apoyos y convocatorias</a>
+    <div class="max-w-3xl">
+      <h2 id="titulo-apoyos-inicio" class="section-title">Apoyos y convocatorias</h2>
+      <p class="mt-3 text-base leading-relaxed text-slate-600">
+        Próximamente se publicarán apoyos, convocatorias y actividades institucionales para
+        cooperativas y proyectos de economía social.
+      </p>
+      <a href="/apoyos" class="btn-secondary mt-6 inline-flex">
+        Consultar sección de apoyos
+      </a>
     </div>
-    <ul class="mt-8 grid list-none gap-6 p-0 md:grid-cols-2" role="list">
-      {apoyosAbiertos.length > 0 ? (
-        apoyosAbiertos.map((apoyo) => (
-          <li>
-            <ApoyoCard apoyo={apoyo} />
-          </li>
-        ))
-      ) : (
-        <li class="col-span-full">
-          <BloqueProximamente
-            variante="compacto"
-            titulo="Convocatorias"
-            mensaje="No hay convocatorias abiertas en este momento."
-          />
-        </li>
-      )}
-    </ul>
   </section>
 
   <section class="section-cta" aria-labelledby="titulo-cta-registro">

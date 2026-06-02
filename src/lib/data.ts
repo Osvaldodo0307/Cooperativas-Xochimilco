@@ -1,6 +1,5 @@
 import { cooperativas } from '@/data/cooperativas';
 import eventosAgendaData from '@/data/eventos.json';
-import apoyosData from '@/data/apoyos.json';
 import memoriaEventosData from '@/data/memoria-eventos.json';
 import { eventosGaleria } from '@/data/eventos';
 import {
@@ -80,7 +79,8 @@ export function getEventoGaleriaById(id: string): EventoGaleria | undefined {
 }
 
 export function getApoyos(): Apoyo[] {
-  return apoyosData as Apoyo[];
+  // No publicar datos de ejemplo hasta contar con convocatorias oficiales validadas.
+  return [];
 }
 
 export function getApoyosPagina(): {
