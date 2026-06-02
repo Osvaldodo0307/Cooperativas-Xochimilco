@@ -1,0 +1,161 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Hero from '@/components/Hero.astro';
+import CooperativaDestacada from '@/components/CooperativaDestacada.astro';
+import EventoGaleriaCard from '@/components/EventoGaleriaCard.astro';
+import BloqueProximamente from '@/components/BloqueProximamente.astro';
+import AgendaCard from '@/components/AgendaCard.astro';
+import ApoyoCard from '@/components/ApoyoCard.astro';
+import {
+  getCooperativaDestacadaPrincipal,
+  getEventosAgenda,
+  getEventosGaleria,
+  getApoyosAbiertos,
+} from '@/lib/data';
+import { pageCanonical } from '@/lib/seo';
+
+const cooperativaDestacada = getCooperativaDestacadaPrincipal();
+const eventosGaleria = getEventosGaleria();
+const { proximos, pasados } = getEventosAgenda();
+const apoyosAbiertos = getApoyosAbiertos().slice(0, 2);
+
+const title = 'Inicio';
+const description =
+  'Portal institucional de cooperativas en Xochimilco: ficha destacada, eventos, agenda y convocatorias de apoyo.';
+const canonical = pageCanonical('/', Astro.site);
+---
+
+<BaseLayout title={title} description={description} canonical={canonical}>
+  <Hero
+    titulo="Cooperativas de Xochimilco"
+    subtitulo="Portal colectivo de cooperativas: aliado tecnológico, registro de eventos y convocatorias de apoyo en la demarcación."
+    mostrarCta={true}
+  />
+
+  {
+    cooperativaDestacada && (
+      <section class="container-main py-12 sm:py-14" aria-labelledby="titulo-caso-destacado">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <h2 id="titulo-caso-destacado" class="section-title">Ficha destacada</h2>
+            <p class="mt-2 max-w-prose text-sm text-slate-600">
+              Aliado tecnológico del portal. Las cooperativas participantes se sumarán al directorio
+              cuando completen su información.
+            </p>
+          </div>
+          <a href={`/cooperativas/${cooperativaDestacada.slug}`} class="link-arrow">
+            Ver ficha destacada completa
+          </a>
+        </div>
+        <div class="mt-8">
+          <CooperativaDestacada cooperativa={cooperativaDestacada} mostrarEncabezadoPortal={false} />
+        </div>
+      </section>
+    )
+  }
+
+  <section class="section-muted" aria-labelledby="titulo-eventos-inicio">
+    <div class="container-main">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <h2 id="titulo-eventos-inicio" class="section-title">Eventos</h2>
+        <a href="/eventos" class="link-arrow">Ver evento publicado</a>
+      </div>
+      {
+        eventosGaleria.length > 0 ? (
+          <ul class="mt-8 grid list-none gap-6 p-0 max-w-3xl" role="list">
+            {eventosGaleria.map((evento) => (
+              <li>
+                <EventoGaleriaCard evento={evento} />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div class="mt-8">
+            <BloqueProximamente
+              variante="compacto"
+              titulo="Eventos"
+              mensaje="Próximamente se publicarán nuevas actividades y registros de eventos."
+            />
+          </div>
+        )
+      }
+    </div>
+  </section>
+
+  <section class="section-muted border-t-0" aria-labelledby="titulo-agenda-inicio">
+    <div class="container-main pb-12 sm:pb-14">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <h2 id="titulo-agenda-inicio" class="section-title">Agenda</h2>
+        <a href="/agenda" class="link-arrow">Ver agenda completa</a>
+      </div>
+      <div class="mt-8 space-y-8">
+        {
+          proximos.length > 0 ? (
+            <ul class="grid list-none gap-6 p-0 md:grid-cols-2" role="list">
+              {proximos.map((evento) => (
+                <li>
+                  <AgendaCard evento={evento} />
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <BloqueProximamente
+              variante="compacto"
+              titulo="Próximas actividades"
+              mensaje="Próximamente se publicarán nuevas actividades y convocatorias."
+            />
+          )
+        }
+        {
+          pasados.length > 0 && (
+            <div>
+              <h3 class="text-base font-semibold text-alcaldia-800">Evento realizado</h3>
+              <ul class="mt-4 grid list-none gap-6 p-0 max-w-2xl" role="list">
+                {pasados.slice(0, 1).map((evento) => (
+                  <li>
+                    <AgendaCard evento={evento} />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="container-main py-12 sm:py-14" aria-labelledby="titulo-apoyos-inicio">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <h2 id="titulo-apoyos-inicio" class="section-title">Apoyos abiertos</h2>
+      <a href="/apoyos" class="link-arrow">Ver todos los apoyos y convocatorias</a>
+    </div>
+    <ul class="mt-8 grid list-none gap-6 p-0 md:grid-cols-2" role="list">
+      {apoyosAbiertos.length > 0 ? (
+        apoyosAbiertos.map((apoyo) => (
+          <li>
+            <ApoyoCard apoyo={apoyo} />
+          </li>
+        ))
+      ) : (
+        <li class="col-span-full">
+          <BloqueProximamente
+            variante="compacto"
+            titulo="Convocatorias"
+            mensaje="No hay convocatorias abiertas en este momento."
+          />
+        </li>
+      )}
+    </ul>
+  </section>
+
+  <section class="section-cta" aria-labelledby="titulo-cta-registro">
+    <div class="container-main text-center">
+      <h2 id="titulo-cta-registro" class="section-title">¿Tu cooperativa quiere participar?</h2>
+      <p class="section-lead mx-auto">
+        Completa el formulario de registro. Cuando envíes logotipo, fotografías y descripción, tu
+        ficha podrá publicarse en el directorio.
+      </p>
+      <a href="/registro" class="btn-primary mt-8">Ir al formulario de registro</a>
+    </div>
+  </section>
+</BaseLayout>

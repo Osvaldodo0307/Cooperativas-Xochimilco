@@ -1,0 +1,106 @@
+---
+import type { EventoGaleria } from '@/types';
+import EventHeroEESYS from '@/components/EventHeroEESYS.astro';
+import GaleriaMemoriaFotografica from '@/components/GaleriaMemoriaFotografica.astro';
+import EventoMemoriaActividades from '@/components/EventoMemoriaActividades.astro';
+import EventoMemoriaSidebar from '@/components/EventoMemoriaSidebar.astro';
+import { galeriaFotosEvento, textoSeguroEvento } from '@/lib/eventos-galeria';
+
+interface Props {
+  evento: EventoGaleria;
+}
+
+const { evento } = Astro.props;
+const isEesys = evento.visualTheme === 'eesys';
+const fotos = galeriaFotosEvento(evento);
+const quoteDestacada = textoSeguroEvento(evento.quoteDestacada);
+const actividadesDetalle = evento.actividadesDetalle ?? [];
+
+function parrafos(texto?: string): string[] {
+  if (!texto?.trim()) return [];
+  return texto
+    .split(/\n\n+/)
+    .map((p) => p.trim())
+    .filter(Boolean);
+}
+
+const parrafosRegistro = parrafos(evento.introRegistro);
+const parrafosAcerca = parrafos(evento.descripcionLarga);
+---
+
+<article class:list={['evento-portal', isEesys && 'eesys-theme']} aria-labelledby={`evento-portal-${evento.id}`}>
+  {isEesys ? <EventHeroEESYS evento={evento} /> : null}
+
+  <div class="evento-portal-layout">
+    <div class="evento-portal-principal">
+      {
+        parrafosRegistro.length > 0 && (
+          <section class="evento-registro-card" aria-labelledby="titulo-registro-evento">
+            <header class="evento-registro-encabezado">
+              <h2 id="titulo-registro-evento" class="evento-seccion-titulo">
+                Registro del evento
+              </h2>
+              <p class="evento-registro-subtitulo">Memoria institucional</p>
+            </header>
+            <div class="evento-portal-prosa space-y-5">
+              {parrafosRegistro.map((parrafo) => (
+                <p class="evento-prosa-parrafo">{parrafo}</p>
+              ))}
+            </div>
+          </section>
+        )
+      }
+
+      {
+        parrafosAcerca.length > 0 && (
+          <section class="evento-seccion-card evento-acerca" aria-labelledby="titulo-acerca-evento">
+            <h2 id="titulo-acerca-evento" class="evento-seccion-titulo">
+              Acerca del encuentro
+            </h2>
+            <div class="evento-acerca-grid mt-5">
+              <div class="evento-portal-prosa space-y-5">
+                {parrafosAcerca.map((parrafo) => (
+                  <p class="evento-prosa-parrafo">{parrafo}</p>
+                ))}
+              </div>
+              {
+                quoteDestacada && (
+                  <blockquote class="evento-cita-destacada">
+                    <p>{quoteDestacada}</p>
+                  </blockquote>
+                )
+              }
+            </div>
+          </section>
+        )
+      }
+
+      {
+        actividadesDetalle.length > 0 ? (
+          <EventoMemoriaActividades actividades={actividadesDetalle} eesys={isEesys} />
+        ) : (
+          evento.actividades &&
+          evento.actividades.length > 0 && (
+            <section class="evento-seccion-card" aria-labelledby="titulo-actividades-evento">
+              <h2 id="titulo-actividades-evento" class="evento-seccion-titulo">
+                Actividades
+              </h2>
+              <ul class="mt-4 space-y-3 text-sm leading-relaxed text-slate-700" role="list">
+                {evento.actividades.map((actividad) => (
+                  <li class="flex items-start gap-3">
+                    <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-xochimilco-green" aria-hidden="true" />
+                    <span>{actividad}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )
+        )
+      }
+
+      {fotos.length > 0 && <GaleriaMemoriaFotografica fotos={fotos} eesys={isEesys} />}
+    </div>
+
+    <EventoMemoriaSidebar evento={evento} eesys={isEesys} />
+  </div>
+</article>

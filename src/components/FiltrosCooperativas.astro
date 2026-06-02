@@ -1,0 +1,110 @@
+---
+import { getGiros, getZonas } from '@/lib/data';
+
+const giros = getGiros();
+const zonas = getZonas();
+---
+
+<div class="form-panel" data-filtros-cooperativas>
+  <h2 class="text-sm font-semibold text-institucional-900">Filtrar cooperativas</h2>
+
+  <p class="mt-2 text-sm font-medium text-slate-600">Giro</p>
+  <div class="mt-2 flex flex-wrap gap-2" role="group" aria-label="Filtrar por giro">
+    <button type="button" class="filter-pill filter-pill-active" data-filtro-giro="">
+      Todos
+    </button>
+    {
+      giros.map((giro) => (
+        <button type="button" class="filter-pill" data-filtro-giro={giro}>
+          {giro}
+        </button>
+      ))
+    }
+  </div>
+
+  <p class="mt-6 text-sm font-medium text-slate-600">Zona</p>
+  <div class="mt-2 flex flex-wrap gap-2" role="group" aria-label="Filtrar por zona">
+    <button type="button" class="filter-pill filter-pill-active" data-filtro-zona="">
+      Todas
+    </button>
+    {
+      zonas.map((zona) => (
+        <button type="button" class="filter-pill" data-filtro-zona={zona}>
+          {zona}
+        </button>
+      ))
+    }
+  </div>
+
+  <p class="mt-4 text-sm text-slate-500" data-filtro-contador aria-live="polite"></p>
+</div>
+
+<script>
+  function initFiltrosCooperativas() {
+    const root = document.querySelector('[data-filtros-cooperativas]');
+    if (!root) return;
+
+    const pillsGiro = root.querySelectorAll<HTMLButtonElement>('[data-filtro-giro]');
+    const pillsZona = root.querySelectorAll<HTMLButtonElement>('[data-filtro-zona]');
+    const contador = root.querySelector('[data-filtro-contador]');
+    const cards = document.querySelectorAll<HTMLElement>('[data-cooperativa-card]');
+    const grid = document.getElementById('lista-cooperativas');
+    const vacioFiltros = document.getElementById('estado-vacio-filtros');
+
+    let giroActivo = '';
+    let zonaActiva = '';
+
+    function activarPill(grupo: NodeListOf<HTMLButtonElement>, activo: HTMLButtonElement) {
+      grupo.forEach((pill) => {
+        const seleccionado = pill === activo;
+        pill.classList.toggle('filter-pill-active', seleccionado);
+        pill.setAttribute('aria-pressed', seleccionado ? 'true' : 'false');
+      });
+    }
+
+    function aplicarFiltros() {
+      let visibles = 0;
+
+      cards.forEach((card) => {
+        const cardGiro = card.dataset.giro ?? '';
+        const cardZona = card.dataset.zona ?? '';
+        const coincideGiro = !giroActivo || cardGiro === giroActivo;
+        const coincideZona = !zonaActiva || cardZona === zonaActiva;
+        const mostrar = coincideGiro && coincideZona;
+
+        card.hidden = !mostrar;
+        if (mostrar) visibles++;
+      });
+
+      if (contador) {
+        contador.textContent = `${visibles} cooperativa${visibles === 1 ? '' : 's'} mostrada${visibles === 1 ? '' : 's'}`;
+      }
+
+      if (grid) grid.hidden = visibles === 0;
+      if (vacioFiltros) vacioFiltros.hidden = visibles > 0;
+    }
+
+    pillsGiro.forEach((pill) => {
+      pill.setAttribute('aria-pressed', pill.dataset.filtroGiro === '' ? 'true' : 'false');
+      pill.addEventListener('click', () => {
+        giroActivo = pill.dataset.filtroGiro ?? '';
+        activarPill(pillsGiro, pill);
+        aplicarFiltros();
+      });
+    });
+
+    pillsZona.forEach((pill) => {
+      pill.setAttribute('aria-pressed', pill.dataset.filtroZona === '' ? 'true' : 'false');
+      pill.addEventListener('click', () => {
+        zonaActiva = pill.dataset.filtroZona ?? '';
+        activarPill(pillsZona, pill);
+        aplicarFiltros();
+      });
+    });
+
+    aplicarFiltros();
+  }
+
+  initFiltrosCooperativas();
+  document.addEventListener('astro:page-load', initFiltrosCooperativas);
+</script>

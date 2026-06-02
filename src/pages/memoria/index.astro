@@ -1,0 +1,53 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import MemoriaEventoCard from '@/components/MemoriaEventoCard.astro';
+import { getMemoriasEventos } from '@/lib/data';
+import { pageCanonical } from '@/lib/seo';
+
+const memorias = getMemoriasEventos();
+const hayMemorias = memorias.length > 0;
+
+const title = 'Memoria documental de eventos';
+const description =
+  'Registro fotográfico y audiovisual de reuniones, capacitaciones, ferias, entregas de apoyo y actividades con cooperativas en Xochimilco.';
+const canonical = pageCanonical('/memoria/', Astro.site);
+---
+
+<BaseLayout title={title} description={description} canonical={canonical}>
+  <section class="container-main py-8 md:py-12">
+    <header class="max-w-2xl">
+      <h1 class="section-title">{title}</h1>
+      <p class="mt-3 text-base leading-relaxed text-slate-600">
+        Archivo de actividades realizadas. El registro del 2.º Encuentro de Economía Social y
+        Solidaria se consulta en la sección Eventos para evitar duplicar contenido.
+      </p>
+    </header>
+
+    {
+      hayMemorias ? (
+        <ul
+          class="mt-10 grid list-none gap-6 p-0 sm:grid-cols-2 xl:grid-cols-3"
+          role="list"
+          aria-label="Listado de memorias documentales"
+        >
+          {memorias.map((memoria) => (
+            <li>
+              <MemoriaEventoCard memoria={memoria} />
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div
+          class="mt-10 rounded-lg border border-dashed border-slate-300 bg-superficie-muted px-6 py-16 text-center"
+          role="status"
+        >
+          <h2 class="text-lg font-semibold text-institucional-900">Sin registros publicados</h2>
+          <p class="mx-auto mt-2 max-w-md text-sm text-slate-600">
+            Aún no hay memorias documentales disponibles. Cuando se publiquen nuevos registros,
+            aparecerán aquí ordenados por fecha.
+          </p>
+        </div>
+      )
+    }
+  </section>
+</BaseLayout>

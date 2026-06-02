@@ -1,0 +1,63 @@
+---
+import { SITE_LOGO, SITE_LOGO_ALT } from '@/lib/branding';
+
+const navItems = [
+  { href: '/', label: 'Inicio', title: 'Página de inicio' },
+  { href: '/cooperativas', label: 'Directorio', title: 'Directorio de cooperativas' },
+  { href: '/cooperativas/destacada', label: 'Destacada', title: 'Cooperativa destacada' },
+  { href: '/eventos', label: 'Eventos', title: 'Eventos con galería fotográfica' },
+  { href: '/agenda', label: 'Agenda', title: 'Agenda de eventos' },
+  { href: '/memoria', label: 'Memoria', title: 'Memoria documental de eventos' },
+  { href: '/apoyos', label: 'Apoyos', title: 'Apoyos y convocatorias' },
+  { href: '/registro', label: 'Registro', title: 'Registro y publicaciones' },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="site-header">
+  <div class="container-main flex flex-col gap-4 py-4 sm:flex-row sm:items-center sm:justify-between">
+    <a href="/" class="flex items-center gap-3 no-underline" aria-label="Alcaldía Xochimilco — Cooperativas, ir al inicio">
+      <img
+        src={SITE_LOGO}
+        alt={SITE_LOGO_ALT}
+        width="152"
+        height="48"
+        class="logo-alcaldia"
+      />
+      <span class="hidden sm:block">
+        <span class="block text-lg font-semibold leading-tight text-alcaldia-900">
+          Cooperativas Xochimilco
+        </span>
+        <span class="block text-xs text-slate-600">Portal institucional</span>
+      </span>
+    </a>
+
+    <nav aria-label="Navegación principal del sitio">
+      <ul class="flex flex-wrap gap-1" role="list">
+        {
+          navItems.map((item) => {
+            const isActive =
+              item.href === '/'
+                ? currentPath === '/'
+                : item.href === '/cooperativas'
+                  ? currentPath === '/cooperativas' || currentPath === '/cooperativas/'
+                  : currentPath.startsWith(item.href);
+            return (
+              <li>
+                <a
+                  href={item.href}
+                  class:list={['nav-link', isActive && 'nav-link-active']}
+                  aria-current={isActive ? 'page' : undefined}
+                  title={item.title}
+                >
+                  {item.label}
+                </a>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </nav>
+  </div>
+</header>

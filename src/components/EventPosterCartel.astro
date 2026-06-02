@@ -1,0 +1,34 @@
+---
+interface Props {
+  src: string;
+  alt: string;
+  caption?: string;
+  variant?: 'card' | 'hero';
+  class?: string;
+}
+
+const {
+  src,
+  alt,
+  caption = 'Cartel del evento',
+  variant = 'card',
+  class: className = '',
+} = Astro.props;
+---
+
+<figure
+  class:list={['eesys-cartel', variant === 'hero' && 'eesys-cartel--hero', className]}
+>
+  <div class="eesys-cartel-frame">
+    <img
+      src={src}
+      alt={alt}
+      class="eesys-cartel-img"
+      width="480"
+      height="680"
+      loading="lazy"
+      decoding="async"
+    />
+  </div>
+  {caption && <figcaption class="eesys-cartel-caption">{caption}</figcaption>}
+</figure>

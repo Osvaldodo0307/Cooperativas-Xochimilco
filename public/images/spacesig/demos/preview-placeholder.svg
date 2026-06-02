@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="Preview pendiente">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0a1628"/>
+      <stop offset="100%" stop-color="#00142d"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="360" fill="url(#bg)"/>
+  <rect x="0" y="0" width="640" height="28" fill="#0f172a" opacity="0.9"/>
+  <circle cx="16" cy="14" r="4" fill="#ef4444" opacity="0.8"/>
+  <circle cx="32" cy="14" r="4" fill="#eab308" opacity="0.8"/>
+  <circle cx="48" cy="14" r="4" fill="#22c55e" opacity="0.8"/>
+  <rect x="72" y="8" width="200" height="12" rx="6" fill="#1e293b"/>
+  <rect x="24" y="48" width="140" height="72" rx="8" fill="#1e3a5f" opacity="0.6"/>
+  <rect x="180" y="48" width="140" height="72" rx="8" fill="#1e3a5f" opacity="0.45"/>
+  <rect x="336" y="48" width="140" height="72" rx="8" fill="#1e3a5f" opacity="0.35"/>
+  <rect x="24" y="136" width="452" height="160" rx="10" fill="#0f2744" opacity="0.55"/>
+  <path d="M48 256 L120 200 L200 230 L280 170 L360 210 L440 150 L520 190" stroke="#5DB133" stroke-width="2" fill="none" opacity="0.5"/>
+  <rect x="488" y="48" width="128" height="248" rx="8" fill="#132743" opacity="0.5"/>
+  <text x="320" y="320" text-anchor="middle" fill="#94a3b8" font-family="system-ui,sans-serif" font-size="13">Preview pendiente</text>
+</svg>

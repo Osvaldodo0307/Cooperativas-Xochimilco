@@ -1,0 +1,35 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import BloqueProximamente from '@/components/BloqueProximamente.astro';
+import { pageCanonical } from '@/lib/seo';
+
+const title = 'Apoyos';
+const description =
+  'Convocatorias, programas y mecanismos de apoyo para cooperativas, productores locales y proyectos de economía social en Xochimilco.';
+const canonical = pageCanonical('/apoyos/', Astro.site);
+---
+
+<BaseLayout title={title} description={description} canonical={canonical}>
+  <section class="container-main py-8 md:py-12">
+    <header class="max-w-2xl">
+      <h1 class="section-title">{title}</h1>
+      <p class="mt-3 text-base leading-relaxed text-slate-600">
+        En este apartado se publicarán convocatorias, programas, capacitaciones y mecanismos de apoyo
+        dirigidos a cooperativas, productores locales, artesanos y proyectos de economía social en
+        Xochimilco.
+      </p>
+    </header>
+
+    <div class="apoyos-proximamente mt-10 max-w-3xl">
+      <BloqueProximamente
+        titulo="Próximamente"
+        mensaje="Estamos integrando información validada sobre apoyos, convocatorias y actividades institucionales. El contenido será publicado conforme se cuente con datos oficiales y vigentes."
+      />
+
+      <p class="apoyos-proximamente-nota" role="status">
+        Información en proceso de integración
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+

@@ -1,0 +1,22 @@
+---
+interface Props {
+  titulo: string;
+  subtitulo?: string;
+  mostrarCta?: boolean;
+}
+
+const { titulo, subtitulo, mostrarCta = false } = Astro.props;
+---
+
+<header class="page-hero">
+  <div class="page-hero-inner">
+    <h1 class="page-hero-title">{titulo}</h1>
+    {subtitulo && <p class="page-hero-subtitle">{subtitulo}</p>}
+    {mostrarCta && (
+      <nav class="mt-8 flex flex-wrap gap-3" aria-label="Accesos rápidos">
+        <a href="/cooperativas" class="btn-primary">Ver directorio de cooperativas</a>
+        <a href="/apoyos" class="btn-secondary">Consultar apoyos y convocatorias</a>
+      </nav>
+    )}
+  </div>
+</header>

@@ -1,0 +1,112 @@
+---
+interface Props {
+  describedBy?: string;
+}
+
+const { describedBy } = Astro.props;
+const formName = 'publicacion-evento-apoyo';
+const tipos = ['Reunión', 'Evento', 'Capacitación', 'Feria', 'Convocatoria', 'Apoyo'];
+---
+
+<form
+  name={formName}
+  method="POST"
+  netlify
+  data-netlify="true"
+  netlify-honeypot="bot-field-evento"
+  class="space-y-5"
+  aria-describedby={describedBy}
+>
+  <input type="hidden" name="form-name" value={formName} />
+  <p class="hidden" aria-hidden="true">
+    <label>No llenar: <input name="bot-field-evento" tabindex="-1" autocomplete="off" /></label>
+  </p>
+
+  <label class="block text-sm">
+    <span class="label-field">Título *</span>
+    <input type="text" name="titulo" required minlength="5" class="input-field" />
+  </label>
+
+  <label class="block text-sm">
+    <span class="label-field">Tipo *</span>
+    <select name="tipo" required class="input-field">
+      <option value="">Selecciona un tipo</option>
+      {tipos.map((tipo) => (
+        <option value={tipo}>{tipo}</option>
+      ))}
+    </select>
+  </label>
+
+  <div class="grid gap-5 sm:grid-cols-2">
+    <label class="block text-sm">
+      <span class="label-field">Fecha *</span>
+      <input type="date" name="fecha" required class="input-field" />
+    </label>
+    <label class="block text-sm">
+      <span class="label-field">Hora</span>
+      <input type="time" name="hora" class="input-field" />
+    </label>
+  </div>
+
+  <label class="block text-sm">
+    <span class="label-field">Lugar o modalidad *</span>
+    <input
+      type="text"
+      name="lugar-modalidad"
+      required
+      class="input-field"
+      placeholder="Ej. Presencial en plaza central / En línea por Zoom"
+    />
+  </label>
+
+  <label class="block text-sm">
+    <span class="label-field">Organizador *</span>
+    <input type="text" name="organizador" required class="input-field" />
+  </label>
+
+  <label class="block text-sm">
+    <span class="label-field">Descripción *</span>
+    <textarea name="descripcion" rows="4" required minlength="20" class="input-field"></textarea>
+  </label>
+
+  <label class="block text-sm">
+    <span class="label-field">Requisitos</span>
+    <textarea
+      name="requisitos"
+      rows="3"
+      class="input-field"
+      placeholder="Un requisito por línea (opcional)"
+    ></textarea>
+  </label>
+
+  <label class="block text-sm">
+    <span class="label-field">Link de registro</span>
+    <input type="url" name="link-registro" class="input-field" placeholder="https://" />
+  </label>
+
+  <label class="block text-sm">
+    <span class="label-field">Contacto responsable *</span>
+    <input
+      type="text"
+      name="contacto-responsable"
+      required
+      class="input-field"
+      placeholder="Nombre y correo o teléfono"
+    />
+  </label>
+
+  <label class="flex items-start gap-2 text-sm">
+    <input type="checkbox" name="aviso-privacidad-evento" value="si" required class="mt-1" />
+    <span>
+      He leído el <a href="/aviso-privacidad" class="text-institucional-700 underline">aviso de privacidad</a>
+      y acepto el tratamiento de los datos para revisar esta publicación. *
+    </span>
+  </label>
+
+  <p class="notice-info text-xs">
+    La solicitud será revisada antes de publicarse en la agenda o sección de apoyos. La información
+    oficial debe verificarse siempre en la fuente correspondiente.
+  </p>
+
+  <button type="submit" class="btn-primary w-full sm:w-auto">Enviar publicación</button>
+</form>

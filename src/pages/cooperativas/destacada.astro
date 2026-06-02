@@ -1,0 +1,55 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import CooperativaDestacada from '@/components/CooperativaDestacada.astro';
+import { getCooperativaDestacadaPrincipal } from '@/lib/data';
+import { etiquetaPublica } from '@/lib/cooperativa';
+import { pageCanonical } from '@/lib/seo';
+
+const cooperativa = getCooperativaDestacadaPrincipal();
+
+if (!cooperativa) {
+  return Astro.redirect('/cooperativas');
+}
+
+const etiqueta = etiquetaPublica(cooperativa);
+const title = `Ficha destacada — ${cooperativa.nombre}`;
+const description = cooperativa.descripcionCorta;
+const canonical = pageCanonical('/cooperativas/destacada/', Astro.site);
+---
+
+<BaseLayout title={title} description={description} canonical={canonical}>
+  <section class="container-main py-8 md:py-12">
+    <nav class="mb-6 text-sm" aria-label="Miga de pan">
+      <ol class="flex flex-wrap items-center gap-2 text-slate-500">
+        <li>
+          <a href="/" class="hover:text-alcaldia-700 no-underline" aria-label="Ir al inicio">Inicio</a>
+        </li>
+        <li aria-hidden="true">/</li>
+        <li>
+          <a href="/cooperativas" class="hover:text-alcaldia-700 no-underline">Directorio</a>
+        </li>
+        <li aria-hidden="true">/</li>
+        <li class="font-medium text-alcaldia-800" aria-current="page">Ficha destacada</li>
+      </ol>
+    </nav>
+
+    <header class="max-w-2xl">
+      <p class="text-xs font-semibold uppercase tracking-wide text-xochimilco-green">{etiqueta}</p>
+      <h1 class="section-title mt-1">Ficha destacada</h1>
+      <p class="section-lead">
+        Primera ficha ampliada del portal colectivo de cooperativas en Xochimilco. {cooperativa.nombre}{' '}
+        impulsa la plataforma como aliado tecnológico del proyecto.
+      </p>
+    </header>
+
+    <div class="mt-8">
+      <CooperativaDestacada cooperativa={cooperativa} mostrarEncabezadoPortal={true} />
+    </div>
+
+    <p class="mt-8 text-center text-sm text-slate-600">
+      <a href={`/cooperativas/${cooperativa.slug}`} class="link-arrow">
+        Ver también en formato de ficha estándar
+      </a>
+    </p>
+  </section>
+</BaseLayout>

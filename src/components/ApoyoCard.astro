@@ -1,0 +1,96 @@
+---
+import type { Apoyo } from '@/types';
+import { formatFecha } from '@/lib/format';
+import {
+  clasesEstatusApoyo,
+  etiquetasEstatusApoyo,
+  requisitosApoyo,
+  tieneLinkOficial,
+} from '@/lib/apoyo';
+
+interface Props {
+  apoyo: Apoyo;
+}
+
+const { apoyo } = Astro.props;
+const requisitos = requisitosApoyo(apoyo);
+const estatusLabel = etiquetasEstatusApoyo[apoyo.estatus] ?? apoyo.estatus;
+const estatusClase = clasesEstatusApoyo[apoyo.estatus] ?? 'bg-slate-100 text-slate-600';
+const fechaCierre = apoyo.fechaCierre?.trim() ? formatFecha(apoyo.fechaCierre) : '';
+const fechaApertura = apoyo.fechaApertura?.trim() ? formatFecha(apoyo.fechaApertura) : '';
+const enlaceOficialLabel = `Consultar fuente oficial: ${apoyo.titulo} (abre en nueva pestaña)`;
+---
+
+<article class="card-base flex h-full flex-col" aria-labelledby={`apoyo-${apoyo.id}-titulo`}>
+  <p class="flex flex-wrap items-center gap-2">
+    <span class:list={['badge', estatusClase]}>
+      <span class="sr-only">Estatus: </span>
+      {estatusLabel}
+    </span>
+  </p>
+
+  <h3 id={`apoyo-${apoyo.id}-titulo`} class="mt-3 text-lg font-semibold text-institucional-900">
+    {apoyo.titulo}
+  </h3>
+
+  {apoyo.institucion?.trim() && (
+    <p class="mt-1 text-sm font-medium text-institucional-700">{apoyo.institucion}</p>
+  )}
+
+  <p class="mt-3 flex-1 text-sm leading-relaxed text-slate-700">{apoyo.descripcion}</p>
+
+  {apoyo.dirigidoA?.trim() && (
+    <p class="mt-3 text-sm text-slate-600">
+      <span class="font-semibold text-institucional-900">Dirigido a:</span> {apoyo.dirigidoA}
+    </p>
+  )}
+
+  {requisitos.length > 0 && (
+    <div class="notice-info mt-4">
+      <h4 class="text-sm font-semibold text-institucional-900">Requisitos</h4>
+      <ul class="mt-2 list-inside list-disc space-y-1.5 text-sm text-slate-700">
+        {requisitos.map((req) => (
+          <li>{req}</li>
+        ))}
+      </ul>
+    </div>
+  )}
+
+  <div class="mt-4 space-y-1 border-t border-slate-100 pt-4 text-sm">
+    {fechaCierre && (
+      <p>
+        <span class="font-semibold text-institucional-900">Fecha límite:</span>
+        <time datetime={apoyo.fechaCierre} class="text-slate-800"> {fechaCierre}</time>
+      </p>
+    )}
+    {fechaApertura && apoyo.estatus === 'próximo' && (
+      <p class="text-slate-600">
+        <span class="font-medium">Apertura prevista:</span>
+        <time datetime={apoyo.fechaApertura}> {fechaApertura}</time>
+      </p>
+    )}
+    {apoyo.responsableContacto?.trim() && (
+      <p class="text-slate-600">
+        <span class="font-medium">Contacto:</span>{' '}
+        <a
+          href={`mailto:${apoyo.responsableContacto}`}
+          class="font-medium text-institucional-700 underline"
+        >
+          {apoyo.responsableContacto}
+        </a>
+      </p>
+    )}
+  </div>
+
+  {tieneLinkOficial(apoyo) && (
+    <a
+      href={apoyo.linkOficial}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="btn-primary mt-4 inline-flex w-full justify-center sm:w-auto"
+      aria-label={enlaceOficialLabel}
+    >
+      Ver fuente oficial
+    </a>
+  )}
+</article>

@@ -1,0 +1,64 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import CooperativaDestacada from '@/components/CooperativaDestacada.astro';
+import CooperativaCardBasica from '@/components/CooperativaCardBasica.astro';
+import { getCooperativas, getCooperativaBySlug } from '@/lib/data';
+import { esFichaDestacada, resolverImagenPrincipal, textoSeguro, urlAbsoluta } from '@/lib/cooperativa';
+import { pageCanonical } from '@/lib/seo';
+
+export function getStaticPaths() {
+  return getCooperativas().map((cooperativa) => ({
+    params: { slug: cooperativa.slug },
+  }));
+}
+
+const { slug } = Astro.params;
+const cooperativa = getCooperativaBySlug(slug!);
+
+if (!cooperativa) {
+  return Astro.redirect('/cooperativas');
+}
+
+const esDestacada = esFichaDestacada(cooperativa);
+const seoDescription = textoSeguro(cooperativa.descripcionCorta).slice(0, 160);
+const seoTitle = cooperativa.nombre;
+const canonical = pageCanonical(`/cooperativas/${cooperativa.slug}/`, Astro.site);
+const imagenPrincipal = resolverImagenPrincipal(cooperativa);
+const ogImage = Astro.site ? urlAbsoluta(imagenPrincipal, Astro.site) : imagenPrincipal;
+---
+
+<BaseLayout
+  title={seoTitle}
+  description={seoDescription}
+  canonical={canonical}
+  ogImage={ogImage}
+  ogType="profile"
+>
+  <section class="container-main py-8 md:py-12">
+    <nav class="mb-6 text-sm" aria-label="Miga de pan">
+      <ol class="flex flex-wrap items-center gap-2 text-slate-500">
+        <li>
+          <a href="/" class="hover:text-alcaldia-700 no-underline" aria-label="Ir a la página de inicio">
+            Inicio
+          </a>
+        </li>
+        <li aria-hidden="true">/</li>
+        <li>
+          <a href="/cooperativas" class="hover:text-alcaldia-700 no-underline">Directorio</a>
+        </li>
+        <li aria-hidden="true">/</li>
+        <li class="font-medium text-alcaldia-800" aria-current="page">{cooperativa.nombre}</li>
+      </ol>
+    </nav>
+
+    {
+      esDestacada ? (
+        <CooperativaDestacada cooperativa={cooperativa} mostrarEncabezadoPortal={false} />
+      ) : (
+        <article class="max-w-3xl">
+          <CooperativaCardBasica cooperativa={cooperativa} />
+        </article>
+      )
+    }
+  </section>
+</BaseLayout>

@@ -1,0 +1,272 @@
+---
+import { SPACESIG_DEMO_PLACEHOLDER, SPACESIG_DEMOS_INTRO, spacesigDemos } from '@/data/spacesig-demos';
+
+const demosJson = JSON.stringify(spacesigDemos);
+---
+
+<section class="spacesig-demos" aria-labelledby="titulo-demos-spacesig">
+  <header>
+    <h3 id="titulo-demos-spacesig" class="text-lg font-semibold text-alcaldia-900">
+      Demos y proyectos desarrollados
+    </h3>
+    <p class="mt-2 max-w-prose text-sm leading-relaxed text-slate-600">
+      {SPACESIG_DEMOS_INTRO}
+    </p>
+  </header>
+
+  <ul class="spacesig-demos-grid mt-6 list-none gap-6 p-0" role="list">
+    {
+      spacesigDemos.map((demo) => (
+        <li>
+          <article class="demo-portfolio-card group">
+            <div class="demo-portfolio-media">
+              <img
+                src={demo.previewImage}
+                alt={demo.previewAlt}
+                class="demo-portfolio-image"
+                width="640"
+                height="360"
+                loading="lazy"
+                decoding="async"
+                onerror={`this.onerror=null;this.src='${SPACESIG_DEMO_PLACEHOLDER}';`}
+              />
+              <span class="demo-portfolio-badge">{demo.category}</span>
+            </div>
+
+            <div class="demo-portfolio-body">
+              <h4 class="demo-portfolio-title">{demo.title}</h4>
+              <p class="demo-portfolio-desc">{demo.description}</p>
+
+              <div class="demo-portfolio-actions">
+                <a
+                  href={demo.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="btn-primary text-sm"
+                  aria-label={`Abrir demo: ${demo.title} (nueva pestaña)`}
+                >
+                  Abrir demo
+                </a>
+                <button
+                  type="button"
+                  class="btn-secondary demo-btn-preview text-sm"
+                  data-demo-preview
+                  data-demo-id={demo.id}
+                  aria-haspopup="dialog"
+                >
+                  Vista previa
+                </button>
+              </div>
+            </div>
+          </article>
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<div
+  id="demo-modal"
+  class="demo-modal"
+  hidden
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="demo-modal-title"
+>
+  <div class="demo-modal-backdrop" data-demo-close tabindex="-1" aria-hidden="true"></div>
+  <div class="demo-modal-panel">
+    <header class="demo-modal-header">
+      <div class="min-w-0 flex-1">
+        <p id="demo-modal-category" class="demo-modal-category"></p>
+        <h4 id="demo-modal-title" class="demo-modal-title">Vista previa</h4>
+      </div>
+      <button type="button" class="demo-modal-close" data-demo-close aria-label="Cerrar vista previa">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </header>
+
+    <div class="demo-modal-body">
+      <div id="demo-modal-iframe-stage" class="demo-modal-iframe-stage" hidden>
+        <div id="demo-modal-loading" class="demo-modal-loading-overlay" hidden>
+          <p class="text-sm text-slate-600">Cargando vista interactiva…</p>
+        </div>
+        <iframe
+          id="demo-modal-iframe"
+          class="demo-modal-iframe"
+          title="Vista interactiva del proyecto"
+          loading="lazy"
+          allow="fullscreen; clipboard-read; clipboard-write"
+          referrerpolicy="strict-origin-when-cross-origin"
+        ></iframe>
+      </div>
+
+      <div id="demo-modal-preview" class="demo-modal-preview" hidden>
+        <figure class="demo-modal-preview-figure">
+          <img
+            id="demo-modal-preview-img"
+            class="demo-modal-preview-img"
+            src=""
+            alt=""
+            width="960"
+            height="540"
+            loading="lazy"
+          />
+        </figure>
+        <p class="demo-modal-preview-copy">
+          La vista interactiva no pudo cargarse dentro del portal. Puedes abrir el demo completo en
+          una nueva pestaña para explorar sus funciones.
+        </p>
+      </div>
+    </div>
+
+    <footer class="demo-modal-footer">
+      <a
+        id="demo-modal-open"
+        href="#"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn-primary text-sm"
+      >
+        Abrir demo
+      </a>
+      <button type="button" class="btn-secondary text-sm" data-demo-close>
+        Cerrar
+      </button>
+    </footer>
+  </div>
+</div>
+
+<script define:vars={{ demosJson, SPACESIG_DEMO_PLACEHOLDER }}>
+  /** @type {Array<{id:string,title:string,category:string,url:string,previewImage:string,previewAlt:string,allowIframe:boolean}>} */
+  const demos = JSON.parse(demosJson);
+
+  const modal = document.getElementById('demo-modal');
+  const iframeStage = document.getElementById('demo-modal-iframe-stage');
+  const iframe = document.getElementById('demo-modal-iframe');
+  const loading = document.getElementById('demo-modal-loading');
+  const previewWrap = document.getElementById('demo-modal-preview');
+  const previewImg = document.getElementById('demo-modal-preview-img');
+  const openLink = document.getElementById('demo-modal-open');
+  const modalTitle = document.getElementById('demo-modal-title');
+  const modalCategory = document.getElementById('demo-modal-category');
+
+  const LOAD_TIMEOUT_MS = 8000;
+
+  if (
+    modal instanceof HTMLElement &&
+    iframeStage instanceof HTMLElement &&
+    iframe instanceof HTMLIFrameElement &&
+    loading instanceof HTMLElement &&
+    previewWrap instanceof HTMLElement &&
+    previewImg instanceof HTMLImageElement &&
+    openLink instanceof HTMLAnchorElement &&
+    modalTitle instanceof HTMLElement &&
+    modalCategory instanceof HTMLElement
+  ) {
+    let loadTimeout = 0;
+    let iframeLoaded = false;
+    let iframeFailed = false;
+    /** @type {typeof demos[0] | null} */
+    let currentDemo = null;
+
+    function resetModal() {
+      window.clearTimeout(loadTimeout);
+      iframeLoaded = false;
+      iframeFailed = false;
+      iframe.removeAttribute('src');
+      iframe.onload = null;
+      iframe.onerror = null;
+      iframeStage.hidden = true;
+      loading.hidden = true;
+      previewWrap.hidden = true;
+    }
+
+    function showIframeStage() {
+      previewWrap.hidden = true;
+      iframeStage.hidden = false;
+      loading.hidden = false;
+    }
+
+    function onIframeLoaded() {
+      iframeLoaded = true;
+      window.clearTimeout(loadTimeout);
+      loading.hidden = true;
+    }
+
+    function showPreviewFallback() {
+      if (!currentDemo) return;
+      iframeFailed = true;
+      loading.hidden = true;
+      iframeStage.hidden = true;
+      previewImg.src = currentDemo.previewImage;
+      previewImg.alt = currentDemo.previewAlt;
+      previewImg.onerror = () => {
+        previewImg.src = SPACESIG_DEMO_PLACEHOLDER;
+      };
+      previewWrap.hidden = false;
+    }
+
+    function startInteractivePreview(demo) {
+      showIframeStage();
+
+      iframe.onload = () => {
+        onIframeLoaded();
+      };
+
+      iframe.onerror = () => {
+        showPreviewFallback();
+      };
+
+      loadTimeout = window.setTimeout(() => {
+        if (!iframeLoaded) {
+          showPreviewFallback();
+        }
+      }, LOAD_TIMEOUT_MS);
+
+      iframe.src = demo.url;
+    }
+
+    function openModal(demoId) {
+      const demo = demos.find((d) => d.id === demoId);
+      if (!demo) return;
+
+      currentDemo = demo;
+      modalTitle.textContent = demo.title;
+      modalCategory.textContent = demo.category;
+      openLink.href = demo.url;
+      resetModal();
+      modal.hidden = false;
+      document.body.style.overflow = 'hidden';
+
+      if (demo.allowIframe) {
+        startInteractivePreview(demo);
+      } else {
+        showPreviewFallback();
+      }
+
+      modal.querySelector('.demo-modal-close')?.focus();
+    }
+
+    function closeModal() {
+      resetModal();
+      currentDemo = null;
+      modal.hidden = true;
+      document.body.style.overflow = '';
+    }
+
+    document.querySelectorAll('[data-demo-preview]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-demo-id');
+        if (id) openModal(id);
+      });
+    });
+
+    modal.querySelectorAll('[data-demo-close]').forEach((el) => {
+      el.addEventListener('click', closeModal);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !modal.hidden) closeModal();
+    });
+  }
+</script>

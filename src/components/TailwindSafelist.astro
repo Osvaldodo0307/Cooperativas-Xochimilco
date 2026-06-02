@@ -1,0 +1,11 @@
+---
+/**
+ * Garantiza que Tailwind JIT genere utilidades de marca usadas en @apply (global.css)
+ * y en strings dinámicos (lib/evento.ts, lib/apoyo.ts). No visible en pantalla.
+ */
+import { clasesSafelist } from '../design-system/colors.mjs';
+---
+
+<div class="hidden" aria-hidden="true" data-tailwind-safelist>
+  {clasesSafelist.join(' ')}
+</div>

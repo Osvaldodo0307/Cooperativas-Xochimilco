@@ -1,0 +1,112 @@
+---
+import type { Evento } from '@/types';
+import { formatFecha, formatFechaEvento, formatHoraEvento } from '@/lib/format';
+import {
+  clasesEstatusEvento,
+  etiquetasEstatusEvento,
+  lugarOModalidad,
+  puedeRegistrarse,
+  requisitosEvento,
+  tieneLinkRegistro,
+} from '@/lib/evento';
+
+interface Props {
+  evento: Evento;
+}
+
+const { evento } = Astro.props;
+const fechaTexto = formatFechaEvento(evento);
+const horaTexto = formatHoraEvento(evento);
+const ubicacion = lugarOModalidad(evento);
+const requisitos = requisitosEvento(evento);
+const mostrarRegistro = puedeRegistrarse(evento);
+const registroCerrado = tieneLinkRegistro(evento) && !mostrarRegistro;
+const estatusLabel =
+  evento.etiquetaEstatus?.trim() || etiquetasEstatusEvento[evento.estatus] || evento.estatus;
+const estatusClase = clasesEstatusEvento[evento.estatus] ?? 'bg-slate-100 text-slate-600';
+const enlaceGaleria = evento.enlaceGaleria?.trim();
+const fechaLimiteTexto = evento.fechaLimite?.trim() ? formatFecha(evento.fechaLimite) : '';
+const registroLabel = `Registrarse al evento: ${evento.titulo} (abre en nueva pestaña)`;
+---
+
+<article class="card-base flex h-full flex-col" aria-labelledby={`evento-${evento.id}-titulo`}>
+  <div class="flex flex-wrap items-center gap-2">
+    <span class="badge-tipo">{evento.tipo}</span>
+    <span class:list={['badge', estatusClase]}>
+      <span class="sr-only">Estatus: </span>
+      {estatusLabel}
+    </span>
+  </div>
+
+  {fechaTexto && (
+    <p class="mt-3 text-sm font-semibold text-institucional-800">
+      <time datetime={evento.fechaInicio}>{fechaTexto}</time>
+      {horaTexto && (
+        <>
+          <span class="sr-only">, horario: </span>
+          <span aria-hidden="true"> · {horaTexto}</span>
+        </>
+      )}
+    </p>
+  )}
+
+  <h3 id={`evento-${evento.id}-titulo`} class="mt-2 text-lg font-semibold text-institucional-900">
+    {evento.titulo}
+  </h3>
+
+  {evento.organizador?.trim() && (
+    <p class="mt-1 text-sm text-slate-600">
+      <span class="font-medium text-slate-700">Organiza:</span> {evento.organizador}
+    </p>
+  )}
+
+  {ubicacion && (
+    <p class="mt-2 text-sm text-slate-600">
+      <span class="font-medium text-slate-700">Lugar o modalidad:</span> {ubicacion}
+    </p>
+  )}
+
+  <p class="mt-3 flex-1 text-sm leading-relaxed text-slate-700">{evento.descripcion}</p>
+
+  {requisitos.length > 0 && (
+    <div class="mt-3">
+      <h4 class="text-xs font-semibold uppercase tracking-wide text-slate-600">Requisitos</h4>
+      <ul class="mt-1 list-inside list-disc text-sm text-slate-700">
+        {requisitos.map((req) => (
+          <li>{req}</li>
+        ))}
+      </ul>
+    </div>
+  )}
+
+  {fechaLimiteTexto && evento.estatus === 'abierto' && (
+    <p class="mt-2 text-xs text-slate-600">
+      Fecha límite de registro:
+      <time datetime={evento.fechaLimite}> {fechaLimiteTexto}</time>
+    </p>
+  )}
+
+  <div class="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+    {mostrarRegistro && (
+      <a
+        href={evento.linkRegistro}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn-primary inline-flex w-full justify-center sm:w-auto"
+        aria-label={registroLabel}
+      >
+        Registrarse al evento
+      </a>
+    )}
+    {enlaceGaleria && (
+      <a href={enlaceGaleria} class="btn-secondary inline-flex w-full justify-center sm:w-auto">
+        Ver registro del evento
+      </a>
+    )}
+    {registroCerrado && !enlaceGaleria && (
+      <p class="text-sm text-slate-600" role="status">
+        El registro ya no está disponible (estatus: {estatusLabel.toLowerCase()}).
+      </p>
+    )}
+  </div>
+</article>

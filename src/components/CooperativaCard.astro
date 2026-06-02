@@ -1,0 +1,12 @@
+---
+import type { Cooperativa } from '@/types';
+import CooperativaCardBasica from '@/components/CooperativaCardBasica.astro';
+
+interface Props {
+  cooperativa: Cooperativa;
+}
+
+const { cooperativa } = Astro.props;
+---
+
+<CooperativaCardBasica cooperativa={cooperativa} />

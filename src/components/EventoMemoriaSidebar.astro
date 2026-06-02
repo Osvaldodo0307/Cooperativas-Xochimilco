@@ -1,0 +1,116 @@
+---
+import type { EventoGaleria } from '@/types';
+import { textoSeguroEvento } from '@/lib/eventos-galeria';
+
+interface Props {
+  evento: EventoGaleria;
+  eesys?: boolean;
+}
+
+const { evento, eesys = false } = Astro.props;
+
+const fechaEtiqueta = textoSeguroEvento(evento.fechaEtiqueta);
+const horarioEtiqueta = textoSeguroEvento(evento.horarioEtiqueta).replace(/\s+/g, ' ');
+const sede = textoSeguroEvento(evento.sede || evento.lugar);
+const direccion = textoSeguroEvento(evento.direccion);
+const tagline = textoSeguroEvento(evento.tagline);
+const fuentes = evento.fuentes ?? [];
+const parcialmenteVerificado = evento.verificationStatus === 'parcialmente_verificado';
+const pendienteVerificacion = evento.verificationStatus === 'pendiente';
+
+const estadoRegistro = parcialmenteVerificado
+  ? 'Información parcialmente verificada'
+  : pendienteVerificacion
+    ? 'Verificación pendiente'
+    : 'Registro verificado';
+---
+
+<aside class="evento-sidebar" aria-label="Información complementaria del evento">
+  <section class="evento-sidebar-bloque" aria-labelledby="sidebar-resumen">
+    <h2 id="sidebar-resumen" class="evento-sidebar-titulo">
+      {eesys ? 'Resumen del evento' : 'Datos clave'}
+    </h2>
+    {tagline && eesys && <p class="evento-sidebar-tagline">{tagline}</p>}
+    <dl class="evento-sidebar-datos">
+      {
+        fechaEtiqueta && (
+          <div class="evento-sidebar-dato">
+            <dt>Fecha</dt>
+            <dd>{fechaEtiqueta}</dd>
+          </div>
+        )
+      }
+      {
+        horarioEtiqueta && (
+          <div class="evento-sidebar-dato">
+            <dt>Horario</dt>
+            <dd>{horarioEtiqueta}</dd>
+          </div>
+        )
+      }
+      {
+        sede && (
+          <div class="evento-sidebar-dato">
+            <dt>Sede</dt>
+            <dd>{sede}</dd>
+          </div>
+        )
+      }
+      {
+        direccion && (
+          <div class="evento-sidebar-dato">
+            <dt>Dirección</dt>
+            <dd>{direccion}</dd>
+          </div>
+        )
+      }
+    </dl>
+  </section>
+
+  {
+    (parcialmenteVerificado || pendienteVerificacion) && (
+      <section class="evento-sidebar-bloque" aria-labelledby="sidebar-estado">
+        <h2 id="sidebar-estado" class="evento-sidebar-titulo">
+          {eesys ? 'Estado del registro' : 'Estado de verificación'}
+        </h2>
+        <p class="evento-sidebar-texto">{estadoRegistro}</p>
+      </section>
+    )
+  }
+
+  {
+    fuentes.length > 0 && (
+      <section class="evento-sidebar-bloque evento-sidebar-fuentes" aria-labelledby="sidebar-fuentes">
+        <h2 id="sidebar-fuentes" class="evento-sidebar-titulo">Fuentes consultadas</h2>
+        <ul class="evento-fuentes-lista" role="list">
+          {fuentes.map((fuente) => (
+            <li class="evento-fuente-item">
+              <a
+                href={fuente.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="evento-fuente-enlace"
+              >
+                {fuente.institucion}
+              </a>
+              {fuente.tipo && <span class="evento-fuente-tipo"> — {fuente.tipo}</span>}
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  {
+    (parcialmenteVerificado || pendienteVerificacion) && (
+      <div class="evento-transparencia" role="note">
+        <p class="evento-transparencia-texto">
+          <span class="evento-transparencia-label">Nota de transparencia:</span>{' '}
+          parte de la información de este registro fue contrastada con fuentes públicas. El contenido
+          podrá actualizarse conforme se integren nuevas evidencias documentales o materiales
+          oficiales.
+        </p>
+      </div>
+    )
+  }
+</aside>

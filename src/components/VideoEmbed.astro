@@ -1,0 +1,70 @@
+---
+import type { VideoMemoria } from '@/types';
+import { textoSeguro, urlVideoEmbebido } from '@/lib/memoria';
+
+interface Props {
+  video: VideoMemoria;
+}
+
+const { video } = Astro.props;
+const embedUrl = urlVideoEmbebido(video);
+const titulo = textoSeguro(video.titulo, 'Video');
+const descripcion = textoSeguro(video.descripcion);
+const urlOriginal = textoSeguro(video.url);
+const iframeTitle = `Reproducción embebida: ${titulo}`;
+const enlaceExternoLabel = `Ver video en ${video.plataforma} (abre en nueva pestaña)`;
+---
+
+<article class="card-base overflow-hidden" aria-labelledby={`video-${titulo.replace(/\s+/g, '-')}`}>
+  <h3 id={`video-${titulo.replace(/\s+/g, '-')}`} class="text-lg font-semibold text-institucional-900">
+    {titulo}
+  </h3>
+
+  {descripcion && <p class="mt-2 text-sm text-slate-600">{descripcion}</p>}
+
+  {
+    embedUrl ? (
+      <div class="mt-4 aspect-video overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
+        <iframe
+          src={embedUrl}
+          title={iframeTitle}
+          class="h-full w-full"
+          loading="lazy"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen
+          referrerpolicy="strict-origin-when-cross-origin"
+        />
+      </div>
+    ) : (
+      urlOriginal && (
+        <p class="mt-4">
+          <a
+            href={urlOriginal}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn-secondary inline-flex"
+            aria-label={enlaceExternoLabel}
+          >
+            Ver video en plataforma externa
+          </a>
+        </p>
+      )
+    )
+  }
+
+  {
+    embedUrl && urlOriginal && (
+      <p class="mt-3 text-xs text-slate-500">
+        <a
+          href={urlOriginal}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="font-medium text-institucional-700 underline"
+          aria-label={enlaceExternoLabel}
+        >
+          Abrir en {video.plataforma}
+        </a>
+      </p>
+    )
+  }
+</article>

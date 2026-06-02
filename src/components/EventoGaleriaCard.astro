@@ -1,0 +1,124 @@
+---
+import type { EventoGaleria } from '@/types';
+import EventPosterCartel from '@/components/EventPosterCartel.astro';
+import { espaciosMemoriaEvento, textoSeguroEvento } from '@/lib/eventos-galeria';
+
+interface Props {
+  evento: EventoGaleria;
+}
+
+const { evento } = Astro.props;
+const isEesys = evento.visualTheme === 'eesys';
+const espaciosMemoria = espaciosMemoriaEvento(evento);
+const posterImage = textoSeguroEvento(evento.posterImage || evento.posterSrc);
+const posterAlt = textoSeguroEvento(
+  evento.posterAlt,
+  `Cartel del ${evento.titulo} en Xochimilco`
+);
+const fechaTexto = textoSeguroEvento(evento.fechaEtiqueta) || evento.fecha;
+const tituloCorto = textoSeguroEvento(evento.tituloCorto);
+const etiquetaEstatus = textoSeguroEvento(evento.etiquetaEstatus, 'Evento realizado');
+const tagline = textoSeguroEvento(evento.tagline);
+const horario = textoSeguroEvento(evento.horarioEtiqueta).replace(/\s+/g, ' ');
+const sede = textoSeguroEvento(evento.sede || evento.lugar);
+const direccion = textoSeguroEvento(evento.direccion);
+const parcialmenteVerificado = evento.verificationStatus === 'parcialmente_verificado';
+const url = `/eventos/${evento.id}`;
+---
+
+<article class:list={['evento-card-memoria', isEesys && 'eesys-theme eesys-highlight-card']}>
+  <div class="evento-card-memoria-cuerpo">
+    {
+      isEesys && posterImage && (
+        <div class="evento-card-memoria-visual">
+          <EventPosterCartel src={posterImage} alt={posterAlt} caption="" />
+        </div>
+      )
+    }
+
+    <div class="evento-card-memoria-info">
+      <div class="evento-card-memoria-badges">
+        {tituloCorto && <span class="eesys-badge eesys-badge--yellow">{tituloCorto}</span>}
+        <span class="eesys-badge eesys-badge--green">{etiquetaEstatus}</span>
+      </div>
+
+      <h3 class="evento-card-memoria-titulo">
+        <a href={url} class="no-underline hover:underline">{evento.titulo}</a>
+      </h3>
+
+      {tagline && <p class="evento-card-memoria-tagline">{tagline}</p>}
+
+      {
+        fechaTexto && (
+          <p class="evento-card-memoria-meta">
+            <time datetime={evento.fecha}>{fechaTexto}</time>
+            {horario && (
+              <>
+                <span class="evento-card-memoria-sep" aria-hidden="true">
+                  ·
+                </span>
+                <span>{horario}</span>
+              </>
+            )}
+          </p>
+        )
+      }
+
+      {
+        sede && (
+          <p class="evento-card-memoria-sede">
+            <span class="font-medium">Sede:</span> {sede}
+          </p>
+        )
+      }
+
+      {
+        direccion && (
+          <p class="evento-card-memoria-direccion">
+            <span class="font-medium">Dirección:</span> {direccion}
+          </p>
+        )
+      }
+
+      <p class="evento-card-memoria-desc">{evento.descripcion}</p>
+
+      <div class="evento-card-memoria-pie">
+        <a href={url} class="eesys-cta inline-flex justify-center text-sm">
+          Ver registro del evento
+        </a>
+
+        <p class="evento-card-memoria-fotos">
+          <svg
+            class="evento-card-memoria-fotos-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.75"
+            aria-hidden="true"
+          >
+            <rect x="3" y="5" width="18" height="14" rx="2" />
+            <circle cx="8.5" cy="10.5" r="1.5" />
+            <path d="M21 16l-5.5-5.5L8 18" />
+          </svg>
+          Memoria fotográfica: {espaciosMemoria} espacio{espaciosMemoria === 1 ? '' : 's'} reservado
+          {espaciosMemoria === 1 ? '' : 's'}
+        </p>
+
+        {
+          parcialmenteVerificado && (
+            <p class="evento-card-memoria-nota">Información parcialmente verificada</p>
+          )
+        }
+      </div>
+    </div>
+
+    {
+      !isEesys && posterImage && (
+        <div class="evento-card-memoria-visual">
+          <EventPosterCartel src={posterImage} alt={posterAlt} caption="" />
+        </div>
+      )
+    }
+  </div>
+</article>
+

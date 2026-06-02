@@ -1,0 +1,73 @@
+---
+import type { MemoriaEvento } from '@/types';
+import { formatFecha } from '@/lib/format';
+import { imgOnErrorMemoria, resolverPortada, textoSeguro } from '@/lib/memoria';
+
+interface Props {
+  memoria: MemoriaEvento;
+}
+
+const { memoria } = Astro.props;
+const portada = resolverPortada(memoria.imagenPortada);
+const fechaTexto = formatFecha(memoria.fecha);
+const lugar = textoSeguro(memoria.lugar);
+const tipo = textoSeguro(memoria.tipo);
+const enlaceEvento = memoria.enlaceEvento?.trim();
+const memoriaUrl = enlaceEvento || `/memoria/${memoria.slug}`;
+const esRegistroEvento = Boolean(enlaceEvento);
+const enlaceLabel = esRegistroEvento
+  ? `Ver registro del evento: ${memoria.titulo}`
+  : `Ver memoria de ${memoria.titulo}`;
+const imgErr = imgOnErrorMemoria();
+---
+
+<article class="card-base flex h-full flex-col overflow-hidden p-0">
+  <a href={memoriaUrl} class="block no-underline" tabindex="-1" aria-hidden="true">
+    <img
+      src={portada}
+      alt={`Imagen de portada: ${memoria.titulo}`}
+      class="h-44 w-full object-cover"
+      width="640"
+      height="176"
+      loading="lazy"
+      onerror={imgErr}
+    />
+  </a>
+
+  <div class="flex flex-1 flex-col p-5">
+    <p class="flex flex-wrap items-center gap-2">
+      {tipo && <span class="badge-tipo">{tipo}</span>}
+      {esRegistroEvento && (
+        <span class="badge border border-alcaldia-200 bg-alcaldia-50 text-alcaldia-700">
+          Evento realizado
+        </span>
+      )}
+    </p>
+
+    {fechaTexto && (
+      <p class="mt-3 text-sm font-semibold text-institucional-800">
+        <time datetime={memoria.fecha}>{fechaTexto}</time>
+      </p>
+    )}
+
+    <h2 class="mt-2 text-lg font-semibold text-institucional-900">
+      <a href={memoriaUrl} class="no-underline hover:text-institucional-700 hover:underline">
+        {memoria.titulo}
+      </a>
+    </h2>
+
+    {lugar && (
+      <p class="mt-2 text-sm text-slate-600">
+        <span class="font-medium text-slate-700">Lugar:</span> {lugar}
+      </p>
+    )}
+
+    {memoria.descripcion?.trim() && (
+      <p class="mt-2 line-clamp-3 flex-1 text-sm text-slate-700">{memoria.descripcion}</p>
+    )}
+
+    <a href={memoriaUrl} class="btn-primary mt-5 w-full text-center" aria-label={enlaceLabel}>
+      {esRegistroEvento ? 'Ver registro del evento' : 'Ver memoria'}
+    </a>
+  </div>
+</article>

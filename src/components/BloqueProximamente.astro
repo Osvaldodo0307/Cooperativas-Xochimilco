@@ -1,0 +1,44 @@
+---
+interface Props {
+  titulo?: string;
+  mensaje: string;
+  variante?: 'default' | 'compacto';
+  mostrarCta?: boolean;
+  ctaHref?: string;
+  ctaTexto?: string;
+}
+
+const {
+  titulo = 'Próximamente',
+  mensaje,
+  variante = 'default',
+  mostrarCta = false,
+  ctaHref = '/registro',
+  ctaTexto = 'Registrar cooperativa',
+} = Astro.props;
+---
+
+<div
+  class:list={['bloque-proximamente', variante === 'compacto' && 'bloque-proximamente-compacto']}
+  role="status"
+>
+  <div class="bloque-proximamente-icono" aria-hidden="true">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-8 w-8">
+      <path
+        d="M12 6v6l4 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"></path>
+    </svg>
+  </div>
+  <h3 class="bloque-proximamente-titulo">{titulo}</h3>
+  <p class="bloque-proximamente-mensaje">{mensaje}</p>
+  {
+    mostrarCta && (
+      <a href={ctaHref} class="btn-secondary mt-5 inline-flex">
+        {ctaTexto}
+      </a>
+    )
+  }
+</div>

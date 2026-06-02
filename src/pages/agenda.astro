@@ -1,0 +1,70 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import AgendaCard from '@/components/AgendaCard.astro';
+import BloqueProximamente from '@/components/BloqueProximamente.astro';
+import { getEventosAgenda } from '@/lib/data';
+import { pageCanonical } from '@/lib/seo';
+
+const { proximos, pasados } = getEventosAgenda();
+
+const title = 'Agenda de eventos';
+const description =
+  'Calendario de actividades para cooperativas en Xochimilco. Consulta eventos realizados y las próximas convocatorias del portal.';
+const canonical = pageCanonical('/agenda/', Astro.site);
+---
+
+<BaseLayout title={title} description={description} canonical={canonical}>
+  <section class="container-main py-8 md:py-12">
+    <header class="max-w-2xl">
+      <h1 class="section-title">{title}</h1>
+      <p class="mt-3 text-base leading-relaxed text-slate-600">
+        Actividades y encuentros vinculados al portal colectivo de cooperativas en Xochimilco.
+      </p>
+    </header>
+
+    <div class="mt-10 space-y-12">
+      <section aria-labelledby="titulo-proximos">
+        <h2 id="titulo-proximos" class="text-xl font-semibold text-alcaldia-900">
+          Próximas actividades
+        </h2>
+        {
+          proximos.length > 0 ? (
+            <div class="mt-6 grid gap-6 md:grid-cols-2">
+              {proximos.map((evento) => (
+                <AgendaCard evento={evento} />
+              ))}
+            </div>
+          ) : (
+            <div class="mt-6">
+              <BloqueProximamente
+                variante="compacto"
+                titulo="Agenda en preparación"
+                mensaje="Próximamente se publicarán nuevas actividades y convocatorias."
+              />
+            </div>
+          )
+        }
+      </section>
+
+      {
+        pasados.length > 0 && (
+          <section aria-labelledby="titulo-pasados" class="border-t border-slate-200 pt-12">
+            <h2 id="titulo-pasados" class="text-xl font-semibold text-alcaldia-900">
+              Eventos realizados
+            </h2>
+            <p class="mt-1 text-sm text-slate-500">
+              Registro de actividades ya concluidas
+            </p>
+            <div class="mt-6 grid gap-6 md:grid-cols-2">
+              {pasados.map((evento) => (
+                <article class="opacity-95">
+                  <AgendaCard evento={evento} />
+                </article>
+              ))}
+            </div>
+          </section>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,56 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { pageCanonical } from '@/lib/seo';
+
+const title = 'Aviso de privacidad';
+const description =
+  'Aviso de privacidad simplificado del portal Cooperativas Xochimilco: datos recabados, finalidad del tratamiento y derechos ARCO.';
+const canonical = pageCanonical('/aviso-privacidad/', Astro.site);
+---
+
+<BaseLayout title={title} description={description} canonical={canonical}>
+  <section class="container-main max-w-3xl py-10 md:py-14">
+    <header>
+      <h1 class="section-title">{title}</h1>
+      <p class="section-lead mt-3">
+        Información sobre el tratamiento de datos personales recabados a través de este sitio
+        institucional.
+      </p>
+      <p class="mt-4 text-sm text-slate-500">Última actualización: mayo 2026</p>
+    </header>
+
+    <div class="prose prose-slate mt-10 max-w-none">
+      <h2 class="text-lg font-semibold text-institucional-900">Responsable</h2>
+      <p class="mt-2 leading-relaxed text-slate-700">
+        El responsable del tratamiento de los datos personales recabados a través de este sitio es la
+        instancia administradora del programa de apoyo a cooperativas en Xochimilco (datos de contacto
+        disponibles en la sección de contacto del portal).
+      </p>
+
+      <h2 class="mt-8 text-lg font-semibold text-institucional-900">Datos que recabamos</h2>
+      <p class="mt-2 leading-relaxed text-slate-700">
+        A través de los formularios de registro y contacto podemos recabar: nombre, correo electrónico,
+        teléfono, nombre de la cooperativa, sector y mensajes que usted proporcione voluntariamente.
+      </p>
+
+      <h2 class="mt-8 text-lg font-semibold text-institucional-900">Finalidad</h2>
+      <p class="mt-2 leading-relaxed text-slate-700">
+        Los datos se utilizan para dar seguimiento a solicitudes de información, registro de interés y
+        comunicación relacionada con los programas de apoyo. No se utilizan para fines distintos sin su
+        consentimiento.
+      </p>
+
+      <h2 class="mt-8 text-lg font-semibold text-institucional-900">Derechos ARCO</h2>
+      <p class="mt-2 leading-relaxed text-slate-700">
+        Usted puede solicitar acceso, rectificación, cancelación u oposición al tratamiento de sus datos
+        mediante el formulario de contacto, indicando el asunto «Privacidad».
+      </p>
+
+      <h2 class="mt-8 text-lg font-semibold text-institucional-900">Cookies</h2>
+      <p class="mt-2 leading-relaxed text-slate-700">
+        Este sitio no utiliza cookies de seguimiento con fines publicitarios. Pueden emplearse cookies
+        técnicas estrictamente necesarias para el funcionamiento del servicio de hospedaje.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

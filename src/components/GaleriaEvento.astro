@@ -1,0 +1,54 @@
+---
+import type { GaleriaMemoriaItem } from '@/types';
+import { imgOnErrorMemoria } from '@/lib/memoria';
+
+interface Props {
+  items: GaleriaMemoriaItem[];
+  tituloEvento: string;
+}
+
+const { items, tituloEvento } = Astro.props;
+const imgErr = imgOnErrorMemoria();
+---
+
+{
+  items.length > 0 && (
+    <section aria-labelledby="titulo-galeria-memoria">
+      <h2 id="titulo-galeria-memoria" class="text-lg font-semibold text-institucional-900">
+        Galería fotográfica
+      </h2>
+      <ul class="mt-4 grid list-none gap-4 p-0 sm:grid-cols-2 lg:grid-cols-3" role="list">
+        {items.map((item, index) => {
+          const alt =
+            item.alt?.trim() ||
+            `${tituloEvento} — fotografía ${index + 1}`;
+          const credito = item.credito?.trim();
+          return (
+            <li>
+              <figure class="overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
+                <img
+                  src={item.src}
+                  alt={alt}
+                  class="aspect-[4/3] w-full object-cover"
+                  width="400"
+                  height="300"
+                  loading="lazy"
+                  onerror={imgErr}
+                />
+                {(credito || alt) && (
+                  <figcaption class="border-t border-slate-100 bg-white px-3 py-2 text-xs text-slate-600">
+                    {credito && (
+                      <p>
+                        <span class="font-medium text-slate-700">Crédito:</span> {credito}
+                      </p>
+                    )}
+                  </figcaption>
+                )}
+              </figure>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  )
+}

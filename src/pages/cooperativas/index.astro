@@ -1,0 +1,62 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import CooperativaDestacada from '@/components/CooperativaDestacada.astro';
+import BloqueProximamente from '@/components/BloqueProximamente.astro';
+import { getCooperativaDestacadaPrincipal } from '@/lib/data';
+import { etiquetaPublica } from '@/lib/cooperativa';
+import { pageCanonical } from '@/lib/seo';
+
+const destacada = getCooperativaDestacadaPrincipal();
+const etiquetaDestacada = destacada ? etiquetaPublica(destacada) : '';
+
+const title = 'Directorio de cooperativas';
+const description =
+  'Directorio público del portal colectivo de cooperativas en Xochimilco. Ficha activa del aliado tecnológico y espacio para futuras cooperativas participantes.';
+const canonical = pageCanonical('/cooperativas/', Astro.site);
+---
+
+<BaseLayout title={title} description={description} canonical={canonical}>
+  <section class="container-main py-10 md:py-14">
+    <header class="max-w-2xl">
+      <h1 class="section-title">{title}</h1>
+      <p class="section-lead">
+        Portal colectivo de cooperativas en Xochimilco. Por ahora se muestra la ficha del aliado
+        tecnológico del proyecto; las cooperativas participantes se integrarán al directorio conforme
+        compartan su información.
+      </p>
+    </header>
+
+    {
+      destacada && (
+        <div class="mt-10">
+          <div class="mb-6 flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <h2 class="text-xl font-bold text-alcaldia-900">Ficha activa</h2>
+              <p class="mt-1 text-sm text-slate-600">
+                {etiquetaDestacada}: {destacada.nombre}
+              </p>
+            </div>
+            <a href={`/cooperativas/${destacada.slug}`} class="link-arrow">
+              Ver ficha destacada completa
+            </a>
+          </div>
+          <CooperativaDestacada cooperativa={destacada} mostrarEncabezadoPortal={false} />
+        </div>
+      )
+    }
+
+    <div class="mt-14">
+      <h2 class="text-xl font-bold text-alcaldia-900">Cooperativas participantes</h2>
+
+      <div class="mt-8">
+        <BloqueProximamente
+          titulo="Directorio en expansión"
+          mensaje="Próximamente se integrarán nuevas cooperativas al directorio."
+          mostrarCta={true}
+          ctaHref="/registro"
+          ctaTexto="Registrar cooperativa"
+        />
+      </div>
+    </div>
+  </section>
+</BaseLayout>

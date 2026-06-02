@@ -1,0 +1,132 @@
+---
+import type { EventoGaleria } from '@/types';
+import EventPosterCartel from '@/components/EventPosterCartel.astro';
+import { textoSeguroEvento } from '@/lib/eventos-galeria';
+
+interface Props {
+  evento: EventoGaleria;
+}
+
+const { evento } = Astro.props;
+
+const tituloCorto = textoSeguroEvento(evento.tituloCorto);
+const etiquetaEstatus = textoSeguroEvento(evento.etiquetaEstatus, 'Evento realizado');
+const tagline = textoSeguroEvento(evento.tagline);
+const heroSubtitle = textoSeguroEvento(evento.heroSubtitle);
+const fechaEtiqueta = textoSeguroEvento(evento.fechaEtiqueta);
+const horarioEtiqueta = textoSeguroEvento(evento.horarioEtiqueta).replace(/\s+/g, ' ');
+const sede = textoSeguroEvento(evento.sede || evento.lugar);
+const direccion = textoSeguroEvento(evento.direccion);
+const posterImage = textoSeguroEvento(evento.posterImage || evento.posterSrc);
+const posterAlt = textoSeguroEvento(
+  evento.posterAlt,
+  `Cartel del ${evento.titulo} en Xochimilco`
+);
+const parcialmenteVerificado = evento.verificationStatus === 'parcialmente_verificado';
+---
+
+<header class="eesys-hero" aria-labelledby={`evento-portal-${evento.id}`}>
+  <div class="eesys-hero-pattern" aria-hidden="true" />
+
+  <div class="eesys-hero-grid">
+    {
+      posterImage && (
+        <div class="eesys-hero-visual">
+          <EventPosterCartel
+            src={posterImage}
+            alt={posterAlt}
+            caption="Cartel del evento"
+            variant="hero"
+          />
+        </div>
+      )
+    }
+
+    <div class="eesys-hero-content">
+      <div class="eesys-hero-badges">
+        {tituloCorto && <span class="eesys-badge eesys-badge--yellow">{tituloCorto}</span>}
+        <span class="eesys-badge eesys-badge--light">{etiquetaEstatus}</span>
+        {
+          parcialmenteVerificado && (
+            <span class="eesys-badge eesys-badge--muted">Información parcialmente verificada</span>
+          )
+        }
+      </div>
+
+      <h1 id={`evento-portal-${evento.id}`} class="eesys-hero-title">
+        {evento.titulo}
+      </h1>
+
+      {tagline && <p class="eesys-hero-tagline">{tagline}</p>}
+      {heroSubtitle && <p class="eesys-hero-lead">{heroSubtitle}</p>}
+
+      <div class="eesys-datos-grid">
+        {
+          fechaEtiqueta && (
+            <div class="eesys-dato-chip">
+              <span class="eesys-dato-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                  <rect x="3" y="5" width="18" height="16" rx="2" />
+                  <path d="M16 3v4M8 3v4M3 11h18" />
+                </svg>
+              </span>
+              <div>
+                <p class="eesys-dato-label">Fecha</p>
+                <p class="eesys-dato-valor">{fechaEtiqueta}</p>
+              </div>
+            </div>
+          )
+        }
+        {
+          horarioEtiqueta && (
+            <div class="eesys-dato-chip">
+              <span class="eesys-dato-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M12 7v5l3 2" />
+                </svg>
+              </span>
+              <div>
+                <p class="eesys-dato-label">Horario</p>
+                <p class="eesys-dato-valor">{horarioEtiqueta}</p>
+              </div>
+            </div>
+          )
+        }
+        {
+          sede && (
+            <div class="eesys-dato-chip">
+              <span class="eesys-dato-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                  <path d="M3 10l9-6 9 6v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V10z" />
+                  <path d="M9 21V12h6v9" />
+                </svg>
+              </span>
+              <div>
+                <p class="eesys-dato-label">Sede</p>
+                <p class="eesys-dato-valor">{sede}</p>
+              </div>
+            </div>
+          )
+        }
+        {
+          direccion && (
+            <div class="eesys-dato-chip">
+              <span class="eesys-dato-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                  <path d="M12 21s7-4.5 7-11a7 7 0 1 0-14 0c0 6.5 7 11 7 11z" />
+                  <circle cx="12" cy="10" r="2.5" />
+                </svg>
+              </span>
+              <div>
+                <p class="eesys-dato-label">Dirección</p>
+                <p class="eesys-dato-valor">{direccion}</p>
+              </div>
+            </div>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</header>
+

@@ -1,0 +1,120 @@
+---
+interface Props {
+  describedBy?: string;
+}
+
+const { describedBy } = Astro.props;
+const formName = 'registro-cooperativa';
+---
+
+<form
+  name={formName}
+  method="POST"
+  netlify
+  data-netlify="true"
+  netlify-honeypot="bot-field"
+  class="space-y-5"
+  aria-describedby={describedBy}
+>
+  <input type="hidden" name="form-name" value={formName} />
+  <p class="hidden" aria-hidden="true">
+    <label>No llenar: <input name="bot-field" tabindex="-1" autocomplete="off" /></label>
+  </p>
+
+  <label class="block text-sm">
+    <span class="label-field">Nombre de la cooperativa *</span>
+    <input type="text" name="nombre-cooperativa" required minlength="2" class="input-field" />
+  </label>
+
+  <label class="block text-sm">
+    <span class="label-field">Nombre comercial</span>
+    <input type="text" name="nombre-comercial" class="input-field" />
+  </label>
+
+  <div class="grid gap-5 sm:grid-cols-2">
+    <label class="block text-sm">
+      <span class="label-field">Giro *</span>
+      <input type="text" name="giro" required class="input-field" />
+    </label>
+    <label class="block text-sm">
+      <span class="label-field">Subcategoría</span>
+      <input type="text" name="subcategoria" class="input-field" />
+    </label>
+  </div>
+
+  <label class="block text-sm">
+    <span class="label-field">Descripción corta *</span>
+    <textarea
+      name="descripcion-corta"
+      rows="3"
+      required
+      minlength="20"
+      maxlength="500"
+      class="input-field"
+      placeholder="Resumen breve para el directorio (máx. 500 caracteres)"
+    ></textarea>
+  </label>
+
+  <label class="block text-sm">
+    <span class="label-field">Productos o servicios *</span>
+    <textarea
+      name="productos-servicios"
+      rows="3"
+      required
+      class="input-field"
+      placeholder="Lista los principales productos o servicios, uno por línea"
+    ></textarea>
+  </label>
+
+  <label class="block text-sm">
+    <span class="label-field">Zona donde opera *</span>
+    <input type="text" name="zona" required class="input-field" placeholder="Ej. Cuemanco, Xochimilco" />
+  </label>
+
+  <label class="block text-sm">
+    <span class="label-field">Horario</span>
+    <input type="text" name="horario" class="input-field" placeholder="Ej. Lunes a sábado, 9:00 – 17:00 h" />
+  </label>
+
+  <div class="grid gap-5 sm:grid-cols-2">
+    <label class="block text-sm">
+      <span class="label-field">WhatsApp público</span>
+      <input type="tel" name="whatsapp" class="input-field" placeholder="+52 55 0000 0000" />
+    </label>
+    <label class="block text-sm">
+      <span class="label-field">Correo público *</span>
+      <input type="email" name="correo" required class="input-field" />
+    </label>
+  </div>
+
+  <label class="block text-sm">
+    <span class="label-field">Redes sociales</span>
+    <textarea
+      name="redes-sociales"
+      rows="3"
+      class="input-field"
+      placeholder="Facebook, Instagram, TikTok, sitio web (una por línea)"
+    ></textarea>
+  </label>
+
+  <label class="block text-sm">
+    <span class="label-field">Programa de apoyo en el que participa</span>
+    <input type="text" name="programa-apoyo" class="input-field" />
+  </label>
+
+  <label class="flex items-start gap-2 text-sm">
+    <input type="checkbox" name="autorizacion-publicacion" value="si" required class="mt-1" />
+    <span>
+      Autorizo la publicación de la información e imágenes proporcionadas en el portal institucional,
+      conforme al <a href="/aviso-privacidad" class="text-institucional-700 underline">aviso de privacidad</a>. *
+    </span>
+  </label>
+
+  <p class="notice-info text-xs">
+    Los datos enviados serán utilizados únicamente para evaluar el registro en el directorio. No se
+    comparten con terceros sin su consentimiento. Puede solicitar acceso o rectificación según el aviso
+    de privacidad.
+  </p>
+
+  <button type="submit" class="btn-primary w-full sm:w-auto">Enviar registro de cooperativa</button>
+</form>

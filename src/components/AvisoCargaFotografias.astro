@@ -1,0 +1,44 @@
+---
+interface Props {
+  carpetaEvento?: string;
+}
+
+const { carpetaEvento } = Astro.props;
+const rutaEjemplo = carpetaEvento
+  ? `public/eventos/${carpetaEvento}/`
+  : 'public/eventos/nombre-del-evento/';
+---
+
+<aside class="aviso-carga-fotos" role="note" aria-labelledby="aviso-carga-fotos-titulo">
+  <h3 id="aviso-carga-fotos-titulo" class="text-base font-semibold text-alcaldia-900">
+    Agregar fotografías
+  </h3>
+  <p class="mt-2 text-sm leading-relaxed text-slate-700">
+    La carga directa de fotografías estará disponible para administradores en una siguiente fase.
+    Por ahora, las imágenes se integran mediante carpetas organizadas por evento.
+  </p>
+  <p class="mt-3 text-sm text-slate-600">
+    Ruta de referencia:
+    <code class="mt-1 block rounded border border-slate-200 bg-white px-2 py-1 text-xs text-slate-800">
+      {rutaEjemplo}portada.jpg, foto-01.jpg … foto-10.jpg
+    </code>
+  </p>
+  <!--
+    Fase futura (Supabase):
+    - Storage bucket: event-photos
+    - Tablas: eventos, evento_fotografias
+    - Roles: admin, editor
+    - Máximo 10 fotografías por evento
+    - Validación de tipo MIME y peso máximo
+    Ver docs/futuro-carga-fotografias.md
+  -->
+  <div
+    class="mt-4 flex cursor-not-allowed items-center justify-center rounded-md border-2 border-dashed border-slate-300 bg-slate-50 px-4 py-8 text-center"
+    aria-disabled="true"
+  >
+    <p class="text-sm text-slate-500">
+      <span class="font-medium text-slate-600">Subir fotografías</span>
+      <span class="mt-1 block">Disponible próximamente</span>
+    </p>
+  </div>
+</aside>

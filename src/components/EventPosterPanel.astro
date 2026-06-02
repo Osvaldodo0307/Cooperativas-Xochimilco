@@ -1,0 +1,47 @@
+---
+interface Props {
+  variant?: 'card' | 'hero';
+  class?: string;
+}
+
+const { variant = 'card', class: className = '' } = Astro.props;
+---
+
+<div
+  class:list={['eesys-poster', variant === 'hero' && 'eesys-poster--hero', className]}
+  aria-hidden={variant === 'card' ? 'true' : undefined}
+>
+  <div class="eesys-poster-pattern" />
+  <div class="eesys-poster-blob eesys-poster-blob--yellow" />
+  <div class="eesys-poster-blob eesys-poster-blob--orange" />
+
+  <div class="eesys-poster-icons" aria-hidden="true">
+    <span class="eesys-poster-icon-ring">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle cx="12" cy="8" r="3" />
+        <circle cx="6" cy="16" r="2.5" />
+        <circle cx="18" cy="16" r="2.5" />
+        <path d="M10 10.5L7.5 14M14 10.5L16.5 14" stroke-linecap="round" />
+      </svg>
+    </span>
+    <span class="eesys-poster-icon-ring eesys-poster-icon-ring--sm">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M7 10h10M7 14h6" stroke-linecap="round" />
+        <path d="M5 6h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z" />
+      </svg>
+    </span>
+    <span class="eesys-poster-icon-ring eesys-poster-icon-ring--sm">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M12 21s6-4 6-10a6 6 0 1 0-12 0c0 6 6 10 6 10z" />
+        <circle cx="12" cy="11" r="2" />
+      </svg>
+    </span>
+  </div>
+
+  <div class="eesys-poster-copy">
+    <p class="eesys-poster-kicker">2.º Encuentro</p>
+    <p class="eesys-poster-title">Economía Social y Solidaria</p>
+    <p class="eesys-poster-place">Xochimilco</p>
+    <p class="eesys-poster-activities">Talleres · Foros · Exposiciones · Venta solidaria</p>
+  </div>
+</div>

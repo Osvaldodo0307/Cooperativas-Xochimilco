@@ -1,0 +1,60 @@
+---
+import type { GaleriaFotoEvento } from '@/types';
+
+interface Props {
+  fotos: GaleriaFotoEvento[];
+  eesys?: boolean;
+}
+
+const { fotos, eesys = false } = Astro.props;
+---
+
+<section
+  class:list={['memoria-fotografica evento-seccion-card', eesys && 'memoria-fotografica--eesys']}
+  aria-labelledby="titulo-memoria-fotografica"
+>
+  <header class="memoria-fotografica-encabezado">
+    <h2 id="titulo-memoria-fotografica" class="evento-seccion-titulo">
+      Memoria fotográfica
+    </h2>
+    <p class="memoria-fotografica-intro">
+      Registro visual del evento. Las imágenes podrán ampliarse conforme se integren nuevas
+      fotografías institucionales.
+    </p>
+  </header>
+
+  <ul class="memoria-fotografica-grid mt-6 list-none gap-4 p-0 sm:grid-cols-2 lg:grid-cols-3" role="list">
+    {
+      fotos.map((foto, index) => (
+        <li class="memoria-foto-slot">
+          {
+            foto.reservado ? (
+              <div class="memoria-foto-reservado">
+                <span class="memoria-foto-reservado-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                    <rect x="3" y="5" width="18" height="14" rx="2" />
+                    <circle cx="8.5" cy="10.5" r="1.5" />
+                    <path d="M21 16l-5.5-5.5L8 18" />
+                  </svg>
+                </span>
+                <span class="memoria-foto-reservado-texto">Espacio reservado</span>
+                <span class="memoria-foto-num">Imagen {String(index + 1).padStart(2, '0')}</span>
+              </div>
+            ) : (
+              <img
+                src={foto.src}
+                alt={foto.alt}
+                class="memoria-foto-img"
+                width="400"
+                height="300"
+                loading="lazy"
+                decoding="async"
+              />
+            )
+          }
+        </li>
+      ))
+    }
+  </ul>
+</section>
+

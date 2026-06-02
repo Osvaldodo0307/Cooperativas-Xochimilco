@@ -1,0 +1,45 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import EventoPortalDetalle from '@/components/EventoPortalDetalle.astro';
+import { getEventosGaleria, getEventoGaleriaById } from '@/lib/data';
+import { pageCanonical } from '@/lib/seo';
+
+export function getStaticPaths() {
+  return getEventosGaleria().map((evento) => ({
+    params: { id: evento.id },
+  }));
+}
+
+const { id } = Astro.params;
+const evento = getEventoGaleriaById(id!);
+
+if (!evento) {
+  return Astro.redirect('/eventos');
+}
+
+const title = evento.titulo;
+const description = evento.descripcion;
+const canonical = pageCanonical(`/eventos/${evento.id}/`, Astro.site);
+---
+
+<BaseLayout title={title} description={description} canonical={canonical}>
+  <section class="container-main py-8 md:py-12">
+    <nav class="mb-6 text-sm" aria-label="Miga de pan">
+      <ol class="flex flex-wrap items-center gap-2 text-slate-500">
+        <li>
+          <a href="/" class="hover:text-alcaldia-700 no-underline" aria-label="Ir al inicio">Inicio</a>
+        </li>
+        <li aria-hidden="true">/</li>
+        <li>
+          <a href="/eventos" class="hover:text-alcaldia-700 no-underline">Eventos</a>
+        </li>
+        <li aria-hidden="true">/</li>
+        <li class="font-medium text-alcaldia-800" aria-current="page">
+          {evento.tituloCorto ?? evento.titulo}
+        </li>
+      </ol>
+    </nav>
+
+    <EventoPortalDetalle evento={evento} />
+  </section>
+</BaseLayout>

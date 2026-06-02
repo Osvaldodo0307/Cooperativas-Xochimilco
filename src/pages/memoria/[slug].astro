@@ -1,0 +1,219 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import GaleriaEvento from '@/components/GaleriaEvento.astro';
+import VideoEmbed from '@/components/VideoEmbed.astro';
+import { getMemoriasEventos, getMemoriaEventoBySlug } from '@/lib/data';
+import { urlAbsoluta } from '@/lib/cooperativa';
+import { formatFecha } from '@/lib/format';
+import {
+  cooperativasParticipantes,
+  creditosGaleria,
+  imgOnErrorMemoria,
+  itemsDocumentos,
+  itemsGaleriaMemoria,
+  itemsVideos,
+  resolverPortada,
+  textoSeguro,
+} from '@/lib/memoria';
+import { pageCanonical } from '@/lib/seo';
+
+export function getStaticPaths() {
+  return getMemoriasEventos()
+    .filter((m) => !m.soloEnlaceEvento)
+    .map((memoria) => ({
+      params: { slug: memoria.slug },
+    }));
+}
+
+const { slug } = Astro.params;
+const memoria = getMemoriaEventoBySlug(slug!);
+
+if (!memoria) {
+  return Astro.redirect('/memoria');
+}
+
+const portada = resolverPortada(memoria.imagenPortada);
+const fechaTexto = formatFecha(memoria.fecha);
+const lugar = textoSeguro(memoria.lugar);
+const organizador = textoSeguro(memoria.organizador);
+const tipo = textoSeguro(memoria.tipo);
+const descripcion = textoSeguro(memoria.descripcion, 'Sin descripción disponible.');
+const participantes = cooperativasParticipantes(memoria);
+const galeria = itemsGaleriaMemoria(memoria);
+const videos = itemsVideos(memoria);
+const documentos = itemsDocumentos(memoria);
+const creditos = creditosGaleria(memoria);
+
+const seoTitle = memoria.titulo;
+const seoDescription = textoSeguro(
+  memoria.descripcion,
+  `Memoria documental: ${memoria.titulo}`
+).slice(0, 160);
+const canonical = pageCanonical(`/memoria/${memoria.slug}/`, Astro.site);
+const ogImage = Astro.site ? urlAbsoluta(portada, Astro.site) : portada;
+const imgErr = imgOnErrorMemoria();
+---
+
+<BaseLayout
+  title={seoTitle}
+  description={seoDescription}
+  canonical={canonical}
+  ogImage={ogImage}
+>
+  <section class="container-main py-8 md:py-12">
+    <nav class="mb-6 text-sm" aria-label="Miga de pan">
+      <ol class="flex flex-wrap items-center gap-2 text-slate-500">
+        <li>
+          <a href="/" class="hover:text-institucional-700" aria-label="Ir a la página de inicio">
+            Inicio
+          </a>
+        </li>
+        <li aria-hidden="true">/</li>
+        <li>
+          <a
+            href="/memoria"
+            class="hover:text-institucional-700"
+            aria-label="Ir a la memoria documental de eventos"
+          >
+            Memoria documental
+          </a>
+        </li>
+        <li aria-hidden="true">/</li>
+        <li class="font-medium text-institucional-800" aria-current="page">
+          {memoria.titulo}
+        </li>
+      </ol>
+    </nav>
+
+    <article>
+      <figure class="overflow-hidden rounded-xl border border-slate-200 bg-slate-100">
+        <img
+          src={portada}
+          alt={`Imagen de portada: ${memoria.titulo}`}
+          class="h-56 w-full object-cover sm:h-80"
+          width="960"
+          height="320"
+          fetchpriority="high"
+          onerror={imgErr}
+        />
+      </figure>
+
+      <header class="mt-6 border-b border-slate-200 pb-6">
+        <div class="flex flex-wrap items-center gap-2">
+          {tipo && <span class="badge-tipo">{tipo}</span>}
+        </div>
+        <h1 class="mt-3 font-display text-2xl font-bold text-institucional-900 sm:text-3xl">
+          {memoria.titulo}
+        </h1>
+        <dl class="mt-4 grid gap-3 text-sm sm:grid-cols-2">
+          {fechaTexto && (
+            <div>
+              <dt class="font-medium text-slate-500">Fecha</dt>
+              <dd class="mt-1 text-slate-800">
+                <time datetime={memoria.fecha}>{fechaTexto}</time>
+              </dd>
+            </div>
+          )}
+          {lugar && (
+            <div>
+              <dt class="font-medium text-slate-500">Lugar</dt>
+              <dd class="mt-1 text-slate-800">{lugar}</dd>
+            </div>
+          )}
+          {organizador && (
+            <div class="sm:col-span-2">
+              <dt class="font-medium text-slate-500">Organizador</dt>
+              <dd class="mt-1 text-slate-800">{organizador}</dd>
+            </div>
+          )}
+        </dl>
+      </header>
+
+      <div class="mt-8 space-y-10">
+        <section>
+          <h2 class="text-lg font-semibold text-institucional-900">Descripción</h2>
+          <p class="mt-3 leading-relaxed text-slate-700">{descripcion}</p>
+        </section>
+
+        {participantes.length > 0 && (
+          <section aria-labelledby="titulo-participantes">
+            <h2 id="titulo-participantes" class="text-lg font-semibold text-institucional-900">
+              Cooperativas participantes
+            </h2>
+            <ul class="mt-3 list-inside list-disc space-y-1.5 text-slate-700">
+              {participantes.map((nombre) => (
+                <li>{nombre}</li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        <GaleriaEvento items={galeria} tituloEvento={memoria.titulo} />
+
+        {videos.length > 0 && (
+          <section aria-labelledby="titulo-videos-memoria">
+            <h2 id="titulo-videos-memoria" class="text-lg font-semibold text-institucional-900">
+              Videos
+            </h2>
+            <div class="mt-4 grid gap-6 lg:grid-cols-2">
+              {videos.map((video) => (
+                <VideoEmbed video={video} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {documentos.length > 0 && (
+          <section aria-labelledby="titulo-documentos-memoria">
+            <h2 id="titulo-documentos-memoria" class="text-lg font-semibold text-institucional-900">
+              Documentos relacionados
+            </h2>
+            <ul class="mt-3 list-none space-y-2 p-0">
+              {documentos.map((doc) => {
+                const docLabel = `Abrir documento: ${doc.titulo} (${doc.tipo})`;
+                return (
+                  <li>
+                    <a
+                      href={doc.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="inline-flex items-center gap-2 font-medium text-institucional-700 underline hover:text-institucional-900"
+                      aria-label={`${docLabel} (abre en nueva pestaña)`}
+                    >
+                      <span aria-hidden="true">📄</span>
+                      {doc.titulo}
+                      <span class="badge bg-slate-100 text-slate-700">{doc.tipo}</span>
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        )}
+
+        {creditos.length > 0 && (
+          <section aria-labelledby="titulo-creditos-memoria" class="notice-info">
+            <h2 id="titulo-creditos-memoria" class="text-sm font-semibold text-institucional-900">
+              Créditos de imagen
+            </h2>
+            <ul class="mt-2 list-inside list-disc text-sm text-slate-700">
+              {creditos.map((credito) => (
+                <li>{credito}</li>
+              ))}
+            </ul>
+            {memoria.autorizacionImagen && (
+              <p class="mt-2 text-xs text-slate-600">
+                Las fotografías se publican con autorización de las personas y organizaciones
+                participantes.
+              </p>
+            )}
+          </section>
+        )}
+
+        <p class="text-xs text-slate-500" role="note">
+          Las imágenes y videos se publican con fines informativos y documentales.
+        </p>
+      </div>
+    </article>
+  </section>
+</BaseLayout>

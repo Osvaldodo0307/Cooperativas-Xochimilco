@@ -1,0 +1,59 @@
+---
+const formName = 'contacto';
+---
+
+<form
+  name={formName}
+  method="POST"
+  netlify
+  data-netlify="true"
+  netlify-honeypot="bot-field"
+  class="space-y-5"
+>
+  <input type="hidden" name="form-name" value={formName} />
+  <p class="hidden" aria-hidden="true">
+    <label>No llenar: <input name="bot-field" tabindex="-1" autocomplete="off" /></label>
+  </p>
+
+  <label class="block text-sm">
+    <span class="mb-1 block font-medium text-slate-700">Nombre *</span>
+    <input
+      type="text"
+      name="nombre"
+      required
+      class="w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-institucional-500 focus:ring-1 focus:ring-institucional-500"
+    />
+  </label>
+
+  <label class="block text-sm">
+    <span class="mb-1 block font-medium text-slate-700">Correo electrónico *</span>
+    <input
+      type="email"
+      name="email"
+      required
+      class="w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-institucional-500 focus:ring-1 focus:ring-institucional-500"
+    />
+  </label>
+
+  <label class="block text-sm">
+    <span class="mb-1 block font-medium text-slate-700">Asunto *</span>
+    <input
+      type="text"
+      name="asunto"
+      required
+      class="w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-institucional-500 focus:ring-1 focus:ring-institucional-500"
+    />
+  </label>
+
+  <label class="block text-sm">
+    <span class="mb-1 block font-medium text-slate-700">Mensaje *</span>
+    <textarea
+      name="mensaje"
+      rows="5"
+      required
+      class="w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-institucional-500 focus:ring-1 focus:ring-institucional-500"
+    ></textarea>
+  </label>
+
+  <button type="submit" class="btn-primary">Enviar mensaje</button>
+</form>
